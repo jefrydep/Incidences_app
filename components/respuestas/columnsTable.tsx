@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { Incidencia } from "@/app/dashboard/respuestas/page";
 import { MetDAT, TypeIncidents } from "@/interface/TypeIncidents";
+import { useState } from "react";
 
 export const columnsTable: ColumnDef<MetDAT>[] = [
   {
@@ -16,11 +17,19 @@ export const columnsTable: ColumnDef<MetDAT>[] = [
     accessorKey: "act_ina",
     header: "Estado",
     cell: ({ row }) => {
+      const [modifiedData, setModifiedData] = useState<MetDAT>(row.original);
+      const handleCheckboxChange = (index) => {
+        const newData = [...modifiedData];
+
+        newData[index].act_ina = !newData[index].act_ina;
+
+        setModifiedData(newData);
+      };
       const isChecked =
         row.original.act_ina === null || row.original.act_ina === 0
           ? false
           : true;
-      return <Checkbox checked={isChecked} onChange={} />;
+      return <Checkbox checked={isChecked} onChange={handleCheckboxChange} />;
     },
   },
 
@@ -46,7 +55,7 @@ export const columnsTable: ColumnDef<MetDAT>[] = [
         <Checkbox
           checked={isChecked}
           onCheckedChange={(value) => {
-            row.toggleSelected(!!value);
+            !value;
           }}
         />
       );
