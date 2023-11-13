@@ -5,7 +5,7 @@ export interface TypeIncidents {
 }
 
 export interface MetDAT {
-  act_ina: number | null;
+  act_ina: number | null | boolean;
   des_ted: string;
   ide_eje: number | null;
   ide_t_e: number;

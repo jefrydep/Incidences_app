@@ -6,10 +6,11 @@ import { LockKeyhole, User2Icon, UserIcon } from "lucide-react";
 import InputFormWithIcon from "../customUI/InputFormWithIcon";
 import PasswordInput from "../customUI/InputFormSeePassword";
 import Swal from "sweetalert2";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useLoginForm from "../hooks/useLoginForm";
 import { useIdeEjeStore } from "@/zustanstore/ideEje/ideEje.store";
 import Loader from "../loader/Loader";
+import axios from "axios";
 const validationSchema = Yup.object().shape({
   cidusuario: Yup.string().required("Usuario es requerido"),
   ccpassword: Yup.string().required("Contraseña es requerida"),
@@ -21,10 +22,20 @@ interface PropsLogin {
 
 const LoginForm = ({ ide_eje }: PropsLogin) => {
   const { onLogin, isLoadingLogin } = useLoginForm();
+  const [ipClient, setIpClient] = useState<string>();
   const setIdeEje = useIdeEjeStore((state) => state.setIdeEje);
   useEffect(() => {
     setIdeEje(ide_eje);
   }, [ide_eje]);
+  const getIpClient = async () => {
+    const api = await axios.get(`https://api.ipify.org`);
+    const res = api.data;
+    setIpClient(res);
+    console.log(res);
+  };
+  useEffect(() => {
+    getIpClient();
+  }, []);
 
   return (
     <div className="  z-50 ">
@@ -48,7 +59,8 @@ const LoginForm = ({ ide_eje }: PropsLogin) => {
                 ide_eje: ide_eje,
                 ano_eje: "2023",
                 ide_apl: 56,
-                i_p_equ: "192.168.1.198",
+                // i_p_equ: ipClient && ipClient,
+                i_p_equ: ipClient || "192.168.1.198",
               }}
               validationSchema={validationSchema}
               onSubmit={onLogin}

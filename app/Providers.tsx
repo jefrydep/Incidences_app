@@ -2,7 +2,7 @@
 
 import { AxiosInterceptor } from "@/interceptors/axios.interceptor";
 import { SessionProvider } from "next-auth/react";
-AxiosInterceptor();
+// AxiosInterceptor();
 interface Props {
   children: React.ReactNode;
 }

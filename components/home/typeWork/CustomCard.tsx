@@ -8,7 +8,7 @@ interface CardInteface {
 }
 const CustomCard = ({ año, cargo, nombreDeAmbiente, siglas }: CardInteface) => {
   const onSelectTypeWork = () => {
-    console.log(año, cargo);
+    // console.log(año, cargo);
   };
 
   return (

@@ -37,45 +37,45 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = useState({});
-  const [dataToSend, setDataToSend] = useState([]);
-  const { data: session, status, update } = useSession();
-  const getSelectedData = (indices: { [key: number]: boolean }, data: any) => {
-    return Object.keys(indices)
-      .filter((index) => indices[parseInt(index, 10)])
-      .map((index) => {
-        const objeto = data[parseInt(index, 10)];
-        return { ...objeto, act_ina: 1 };
-      });
-  };
-  const objetosSeleccionados = getSelectedData(rowSelection, data);
-  console.log(objetosSeleccionados);
+  // const [rowSelection, setRowSelection] = useState({});
+  // const [dataToSend, setDataToSend] = useState([]);
+  // const { data: session, status, update } = useSession();
+  // const getSelectedData = (indices: { [key: number]: boolean }, data: any) => {
+  //   return Object.keys(indices)
+  //     .filter((index) => indices[parseInt(index, 10)])
+  //     .map((index) => {
+  //       const objeto = data[parseInt(index, 10)];
+  //       return { ...objeto, act_ina: 1 };
+  //     });
+  // };
+  // const objetosSeleccionados = getSelectedData(rowSelection, data);
+  // // console.log(objetosSeleccionados);
 
-  const sendIncidents = async () => {
-    "enviando incidencias";
-    const response = await tramiteApi.post(
-      `/smart/ejecutora_tip_inc/maintenance`,
-      objetosSeleccionados,
-      {
-        headers: {
-          Authorization: `Bearer ${session?.user.access_token}`,
-        },
-      }
-    );
-    const res = response.data;
-    console.log(res);
-  };
+  // const sendIncidents = async () => {
+  //   "enviando incidencias";
+  //   const response = await tramiteApi.post(
+  //     `/smart/ejecutora_tip_inc/maintenance`,
+  //     objetosSeleccionados,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${session?.user.access_token}`,
+  //       },
+  //     }
+  //   );
+  //   const res = response.data;
+  //   console.log(res);
+  // };
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onRowSelectionChange: setRowSelection,
+    // onRowSelectionChange: setRowSelection,
 
-    state: {
-      rowSelection,
-    },
+    // state: {
+    //   rowSelection,
+    // },
   });
 
   return (
@@ -173,13 +173,6 @@ export function DataTable<TData, TValue>({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </div>
-      <div>
-        <div>
-          {}
-          <Button onClick={sendIncidents}>Guardar</Button>
-        </div>
-        {/* {table.getFilteredSelectedRowModel().rows} */}
       </div>
     </div>
   );
