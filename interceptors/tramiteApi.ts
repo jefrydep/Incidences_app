@@ -1,18 +1,20 @@
 import { useLoadingStore } from "@/zustanstore/loading/loading.store";
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
+import { getSession, useSession } from "next-auth/react";
 import Swal from "sweetalert2";
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 export const tramiteApi = axios.create({
   baseURL: API_URL,
 });
-tramiteApi.interceptors.request.use((config: any) => {
+tramiteApi.interceptors.request.use(async (config: any) => {
+  // const { data: session } = await useSession();
+  const session = await getSession();
   useLoadingStore.getState().showLoading();
   config.headers = {
     ...config.headers,
-    // 'x-token': localStorage.getItem('token')
-    // ide_bde: localStorage.getItem("ide_eje-storage"),
+    Authorization: `Bearer ${session?.user.access_token}`,
+    ide_dbe: 1,
   };
-  //   console.log(localStorage.getItem("ide_eje-storage"));
 
   return config;
 });

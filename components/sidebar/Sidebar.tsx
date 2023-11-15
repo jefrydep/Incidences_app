@@ -63,7 +63,7 @@ const Sidebar = () => {
     <section
       className={` ${
         isOpen ? "grid" : "hidden"
-      } lg:flex w-[70vw] pt-10 lg:pt-0    z-40 fixed lg:relative  bottom-0 top-0  lg:w-[15rem]  lg:h-screen  bgSidebarMenu`}
+      } lg:flex w-[70vw] pt-10 lg:pt-0    z-[35] fixed lg:relative  bottom-0 top-0  lg:w-[15rem]  lg:h-screen  bgSidebarMenu`}
     >
       {isLoading && <Loader />}
 

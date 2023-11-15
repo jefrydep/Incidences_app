@@ -20,6 +20,4 @@ export const useIncidenciasStore = create<incidenciasStore>()((set) => ({
           : incidence
       ),
     })),
-  // setIncidences: (prevIncidences: MetDAT[]) =>
-  //   set({ incidencias: prevIncidences }),
 }));
