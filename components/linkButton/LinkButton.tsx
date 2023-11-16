@@ -13,10 +13,10 @@ const LinkButton = ({ href, icon, name }: LinkInterface) => {
   const pathName = usePathname();
 
   return (
-    <Link className=" " href={`${href}`}>
+    <Link className="   " href={`${href}`}>
       <Button
         //   onClick={toggleMenu}
-        className="flex px-2 gap-6 w-full  justify-start"
+        className="flex px-2 gap-6 w-full mb-3  justify-start"
         variant={`${pathName === `${href}` ? "secondary" : "ghost"}`}
       >
         {icon}

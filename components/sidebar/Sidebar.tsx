@@ -5,16 +5,24 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import {
+  AreaChart,
   Book,
   BookA,
   HomeIcon,
   LogOut,
+  TrendingUp,
   UserCog,
   Users2Icon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Input } from "../ui/input";
 import axios from "axios";
 import Loader from "../loader/Loader";
@@ -22,6 +30,9 @@ import { MdCancel } from "react-icons/md";
 import { useIdeEjeStore } from "@/zustanstore/ideEje/ideEje.store";
 import { useMenuStore } from "@/zustanstore/menuMovil/menuMovil.store";
 import LinkButton from "../linkButton/LinkButton";
+import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
+import CustomMolal from "../customUI/CustomModal";
+import CustomCard from "../home/typeWork/CustomCard";
 const Sidebar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -30,13 +41,17 @@ const Sidebar = () => {
   const ide_eje = useIdeEjeStore((state) => state.ide_eje);
   console.log(ide_eje);
   const isOpen = useMenuStore((state) => state.isOpen);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const selectedAmbiente = useIdeAmbiente((state) => state.nom_amb);
+  const ambientes = session?.user.data.ambientes;
+  console.log(ambientes);
 
-  const permissions = [
-    {
-      customers: true,
-      ventas: false,
-    },
-  ];
+  // const permissions = [
+  //   {
+  //     customers: true,
+  //     ventas: false,
+  //   },
+  // ];
 
   const routerMenu = [
     {
@@ -45,18 +60,18 @@ const Sidebar = () => {
       icon: <HomeIcon />,
       name: "Inicio",
     },
-    {
-      id: 1,
-      href: "/dashboard/customers",
-      icon: <Users2Icon />,
-      name: "Clientes",
-    },
-    {
-      id: 2,
-      href: "/dashboard/respuestas",
-      icon: <BookA />,
-      name: "Respuestas",
-    },
+    // {
+    //   id: 1,
+    //   href: "/dashboard/customers",
+    //   icon: <Users2Icon />,
+    //   name: "Clientes",
+    // },
+    // {
+    //   id: 2,
+    //   href: "/dashboard/respuestas",
+    //   icon: <BookA />,
+    //   name: "Respuestas",
+    // },
   ];
 
   return (
@@ -82,11 +97,28 @@ const Sidebar = () => {
         </div> */}
 
         <nav className="lg:mt-20 flex  flex-col gap-1 lg:gap-4   ">
-          {routerMenu.map((route) => (
+          {/* {routerMenu.map((route) => (
             <div key={route.id}>
               <LinkButton {...route} />
             </div>
-          ))}
+          ))} */}
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Tipos de incidencia</AccordionTrigger>
+              <AccordionContent>
+                <LinkButton
+                  href="/dashboard/home"
+                  icon={<TrendingUp />}
+                  name="Ambiente"
+                />
+                <LinkButton
+                  href="/dashboard/respuestas"
+                  icon={<AreaChart />}
+                  name="Ejecutora"
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           <hr />
 
@@ -105,7 +137,7 @@ const Sidebar = () => {
 
               if (result.isConfirmed) {
                 setIsLoading(true);
-
+                localStorage.clear();
                 await signOut({
                   redirect: false,
                 });

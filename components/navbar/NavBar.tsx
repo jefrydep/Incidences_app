@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import CustomMolal from "../customUI/CustomModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import CustomCard from "../home/typeWork/CustomCard";
 import { Button } from "../ui/button";
@@ -24,12 +24,20 @@ const NavBar = () => {
   const isOpen = useMenuStore((state) => state.isOpen);
   const { data: session, status, update } = useSession();
   const [isOpenModal, setIsOpenModal] = useState(false);
+
   const selectedAmbiente = useIdeAmbiente((state) => state.nom_amb);
   const ambientes = session?.user.data.ambientes;
+  useEffect(() => {
+    if (!selectedAmbiente) {
+      setIsOpenModal(true);
+    }
+  }, []);
+
   console.log(ambientes);
 
   return (
-    <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0  z-30 top-0">
+    // <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0  z-30 top-0">
+    <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0 z-30 lg:z-[60] top-0">
       <div className=" px-4   flex items-center  justify-between content-center lg:justify-start  gap-2  ">
         {session?.user && (
           <div>
@@ -39,7 +47,7 @@ const NavBar = () => {
               </Button>
             </div>
             <CustomMolal isOpen={isOpenModal}>
-              <section className="bg-white w-[50rem]   p-2 lg:p-8 shadow-lg rounded-xl">
+              <section className=" bg-white w-[50rem]  text-black p-2 lg:p-8 shadow-lg rounded-xl">
                 <div className="flex w-full  justify-end ">
                   <div
                     className="cursor-pointer"
@@ -97,7 +105,7 @@ const NavBar = () => {
         </div>
       </div>
 
-      <div className="absolute     right-5 grid content-center items-center     ">
+      {/* <div className="absolute     right-5 grid content-center items-center     ">
         <DropdownMenu>
           <DropdownMenuTrigger className="  rounded-full h-12 w-12 containerProfile   ">
             {" "}
@@ -120,7 +128,7 @@ const NavBar = () => {
             <DropdownMenuItem>Subscription</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </div> */}
     </nav>
   );
 };
