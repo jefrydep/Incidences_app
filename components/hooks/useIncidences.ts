@@ -1,3 +1,4 @@
+"use client";
 import { getIncidences, sendIncidencesSaved } from "@/services/incidencias";
 import { useIncidenciasStore } from "@/zustanstore";
 import { useEffect, useState } from "react";

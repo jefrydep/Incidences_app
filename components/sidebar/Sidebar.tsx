@@ -43,8 +43,6 @@ const Sidebar = () => {
   const isOpen = useMenuStore((state) => state.isOpen);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const selectedAmbiente = useIdeAmbiente((state) => state.nom_amb);
-  const ambientes = session?.user.data.ambientes;
-  console.log(ambientes);
 
   // const permissions = [
   //   {
@@ -137,7 +135,8 @@ const Sidebar = () => {
 
               if (result.isConfirmed) {
                 setIsLoading(true);
-                localStorage.clear();
+                localStorage.removeItem("ambiente-storage");
+                localStorage.removeItem("ide_amb-storage");
                 await signOut({
                   redirect: false,
                 });
@@ -145,6 +144,7 @@ const Sidebar = () => {
                 router.replace(`/login/${ide_eje}`);
 
                 setIsLoading(false);
+                // location.reload();
               }
             }}
             className="flex px-2 gap-6 w-full  justify-start"

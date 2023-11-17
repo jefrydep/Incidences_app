@@ -1,3 +1,4 @@
+"use client";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useIncidenciasStore } from "@/zustanstore";
@@ -47,12 +48,14 @@ const TableIncidences = ({
     }
   };
   useEffect(() => {
-    setIsCheckedValue(isChecked === null || isChecked === 0 ? false : true);
+    if (typeof window !== "undefined") {
+      setIsCheckedValue(isChecked === null || isChecked === 0 ? false : true);
+    }
   }, [isChecked]);
 
   return (
     <div className="grid grid-cols-2 items-center px-3   border overflow-hidden ">
-      <div className="    ">{incidencia}</div>
+      {/* <div className="    ">{incidencia}</div> */}
 
       <input
         className=" "

@@ -1,3 +1,4 @@
+"use client";
 import { TypeAmbientes } from "@/interface/Ambientes";
 import { getAmbiente } from "@/services/ambiente";
 import { useIdeEjeStore } from "@/zustanstore";

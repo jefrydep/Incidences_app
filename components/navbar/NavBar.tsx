@@ -27,13 +27,13 @@ const NavBar = () => {
 
   const selectedAmbiente = useIdeAmbiente((state) => state.nom_amb);
   const ambientes = session?.user.data.ambientes;
-  useEffect(() => {
-    if (!selectedAmbiente) {
-      setIsOpenModal(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!selectedAmbiente) {
+  //     setIsOpenModal(true);
+  //   }
+  // }, [selectedAmbiente]);
 
-  console.log(ambientes);
+  // console.log(ambientes);
 
   return (
     // <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0  z-30 top-0">
@@ -79,8 +79,6 @@ const NavBar = () => {
                         siglas={amb.sig_laa}
                       />
                     ))}
-
-                  {/* {ambientes && <DataTable columns={columns} data={ambientes} />} */}
                 </div>
               </section>
             </CustomMolal>

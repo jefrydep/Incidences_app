@@ -1,3 +1,4 @@
+"use client";
 import { getAmbiente, sendAmbienteSelected } from "@/services/ambiente";
 import { useIdeEjeStore } from "@/zustanstore";
 import { useAmbienteStore } from "@/zustanstore/ambiente/ambiente.store";
@@ -13,7 +14,6 @@ const useAmbiente = () => {
   const { data: session, status, update } = useSession();
   const [ambienteFiltered, setAmbienteFiltered] = useState(incidensSelected);
   const [busqueda, setBusqueda] = useState<string>("");
-  const ambientes = session?.user.data.ambientes;
   const [dataTosend, setDataTosend] = useState([]);
   console.log(incidensSelected);
 
@@ -69,7 +69,6 @@ const useAmbiente = () => {
   };
 
   return {
-    ambientes,
     checkedIncidences,
     unCheckedIncidences,
     busqueda,
