@@ -55,7 +55,7 @@ const TableIncidences = ({
 
   return (
     <div className="grid grid-cols-2 items-center px-3   border overflow-hidden ">
-      {/* <div className="    ">{incidencia}</div> */}
+      <div className="    ">{incidencia}</div>
 
       <input
         className=" "

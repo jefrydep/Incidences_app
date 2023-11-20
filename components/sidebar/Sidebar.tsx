@@ -26,7 +26,7 @@ import {
 import { Input } from "../ui/input";
 import axios from "axios";
 import Loader from "../loader/Loader";
-import { MdCancel } from "react-icons/md";
+import { MdCancel, MdReportProblem } from "react-icons/md";
 import { useIdeEjeStore } from "@/zustanstore/ideEje/ideEje.store";
 import { useMenuStore } from "@/zustanstore/menuMovil/menuMovil.store";
 import LinkButton from "../linkButton/LinkButton";
@@ -100,6 +100,11 @@ const Sidebar = () => {
               <LinkButton {...route} />
             </div>
           ))} */}
+          <LinkButton
+            href="/dashboard/reportes"
+            icon={<MdReportProblem />}
+            name="Reportes"
+          />
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>Tipos de incidencia</AccordionTrigger>

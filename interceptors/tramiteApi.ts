@@ -8,11 +8,14 @@ export const tramiteApi = axios.create({
 });
 tramiteApi.interceptors.request.use(async (config: any) => {
   // const { data: session } = await useSession();
+
   const session = await getSession();
+  // console.log(session?.user.access_token);
   useLoadingStore.getState().showLoading();
   config.headers = {
     ...config.headers,
     Authorization: `Bearer ${session?.user.access_token}`,
+
     ide_dbe: 1,
   };
 

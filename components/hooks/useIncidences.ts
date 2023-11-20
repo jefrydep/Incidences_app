@@ -1,5 +1,9 @@
 "use client";
-import { getIncidences, sendIncidencesSaved } from "@/services/incidencias";
+import {
+  getAvailableIncidences,
+  getIncidences,
+  sendIncidencesSaved,
+} from "@/services/incidencias";
 import { useIncidenciasStore } from "@/zustanstore";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -59,6 +63,7 @@ const useIncidences = (ide_eje: number) => {
       });
     }
   };
+
   return {
     getData,
     handleIncidenceChange,
