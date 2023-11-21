@@ -38,9 +38,7 @@ const ReportesPage = () => {
     statsIncidences,
     getStartPage,
   } = useAvailableIncidences(fch_ini, fch_fin, offset, limit);
-  // const [position, setPosition] = useState<LatLngExpression>([
-  //   -15.512906567247873, -70.1288912112806,
-  // ]);
+
   const { getAllDetailIncidents, detailsByIncident } = useIncidences(1769);
   const loading = useLoadingStore((state) => state.loading);
 
@@ -56,6 +54,7 @@ const ReportesPage = () => {
       getAllDetailIncidents(selected.ide_eve, selected.ide_per);
     }
   };
+  useEffect(() => {}, []);
 
   const handleGotIncidences = () => {};
   return (

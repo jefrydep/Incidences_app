@@ -5,7 +5,7 @@ import L, { IconOptions, LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MdCenterFocusStrong, MdGpsFixed } from "react-icons/md";
 import { Locate } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import icon from "leaflet/dist/images/marker-icon-2x.png";
 import markerSvg from "@/public/markergps.svg";
 import marker from "@/public/marker.png";
