@@ -13,6 +13,7 @@ import { getAvailableIncidences } from "@/services/incidencias";
 import useAvailableIncidences from "@/components/hooks/useAvailableIncidences";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Leaf } from "lucide-react";
 
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
@@ -23,7 +24,8 @@ const ReportesPage = () => {
   const {
     getAllAvailableIncidences,
     availableIncidences,
-    setAvailableIncidences,
+    selectedIncidence,
+    setSelectedIncidence,
   } = useAvailableIncidences(fch_ini, fch_fin);
   // const [position, setPosition] = useState<LatLngExpression>([
   //   -15.512906567247873, -70.1288912112806,
@@ -34,7 +36,9 @@ const ReportesPage = () => {
   const handleLabelClick = (index: number) => {
     //
     if (availableIncidences && availableIncidences[index]) {
-      const { lat_eve, lon_eve } = availableIncidences[index];
+      const selected = availableIncidences[index];
+      console.log(selected);
+      setSelectedIncidence([selected]);
       // setAvailableIncidences([lat_eve, lon_eve]);
     }
   };
@@ -66,15 +70,18 @@ const ReportesPage = () => {
           </TabsContent>
           <TabsContent value="reportadas">
             <section className="border rounded-lg p-3 mb-2">
+              <div>
+                <Input type="text" />
+              </div>
               <div className="flex ">
                 <div>
                   {/* <h1>Incidencias Reportadas</h1> */}
-                  <div className="flex">
+                  <div className="flex flex-wrap">
                     {availableIncidences &&
                       availableIncidences.map((inc, idx) => (
                         <div
                           key={idx}
-                          className="bg-blue-500 m-2 rounded-md p-2 cursor-pointer"
+                          className="bg-blue-500 m-2  min-w-[10rem] rounded-md p-2  cursor-pointer"
                           onClick={() => handleLabelClick(idx)}
                         >
                           <Label>{inc.des_ted}</Label>
@@ -85,9 +92,8 @@ const ReportesPage = () => {
                 </div>
               </div>
             </section>
-            {availableIncidences && (
-              <DynamicMap position={availableIncidences} />
-            )}
+            {selectedIncidence && <DynamicMap position={selectedIncidence} />}
+            {/* {<DynamicMap />} */}
           </TabsContent>
         </Tabs>
       </section>

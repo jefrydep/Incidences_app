@@ -6,6 +6,8 @@ import React, { useState } from "react";
 
 const useAvailableIncidences = (fch_ini: string, fch_fin: string) => {
   const [availableIncidences, setAvailableIncidences] = useState<Item[]>();
+  const [selectedIncidence, setSelectedIncidence] = useState<Item[]>();
+
   const ide_amb = useIdeAmbiente((state) => state.ide_amb);
   console.log(ide_amb);
 
@@ -18,6 +20,7 @@ const useAvailableIncidences = (fch_ini: string, fch_fin: string) => {
       10
     );
     setAvailableIncidences(data.items);
+    setSelectedIncidence(data.items);
     console.log(data);
   };
 
@@ -25,6 +28,8 @@ const useAvailableIncidences = (fch_ini: string, fch_fin: string) => {
     getAllAvailableIncidences,
     availableIncidences,
     setAvailableIncidences,
+    selectedIncidence,
+    setSelectedIncidence,
   };
 };
 
