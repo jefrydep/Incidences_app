@@ -1,6 +1,8 @@
 "use client";
+import { DetailsIncidences } from "@/interface/AvailableIncidences";
 import {
   getAvailableIncidences,
+  getDetailIncidents,
   getIncidences,
   sendIncidencesSaved,
 } from "@/services/incidencias";
@@ -13,6 +15,9 @@ const useIncidences = (ide_eje: number) => {
   const [busqueda, setBusqueda] = useState<string>("");
   const incidences = useIncidenciasStore((state) => state.incidencias);
   const [incidencesFiltered, setIncidencesFiltered] = useState(incidences);
+  const [detailsByIncident, setDetailsByIncident] = useState<
+    DetailsIncidences[]
+  >([]);
 
   useEffect(() => {
     setIncidencesFiltered(incidences);
@@ -64,6 +69,15 @@ const useIncidences = (ide_eje: number) => {
     }
   };
 
+  const getAllDetailIncidents = async (ide_eve: number, ide_per: number) => {
+    const { data } = await getDetailIncidents(ide_eve, ide_per);
+    if (data) {
+      setDetailsByIncident(data);
+    }
+
+    console.log(data);
+  };
+
   return {
     getData,
     handleIncidenceChange,
@@ -71,6 +85,8 @@ const useIncidences = (ide_eje: number) => {
     unCheckedIncidences,
     sendIncidents,
     busqueda,
+    getAllDetailIncidents,
+    detailsByIncident,
   };
 };
 

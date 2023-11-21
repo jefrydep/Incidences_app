@@ -18,7 +18,7 @@ const HomePage = () => {
   const loading = useLoadingStore((state) => state.loading);
 
   const incidensSelected = useAmbienteStore((state) => state.ambientes);
-  console.log(incidensSelected);
+  // console.log(incidensSelected);
   const {
     busqueda,
     checkedIncidences,

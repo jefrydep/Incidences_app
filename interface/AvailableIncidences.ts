@@ -35,3 +35,11 @@ export interface Meta {
   totalPages: number;
   currentPage: number;
 }
+
+export interface DetailsIncidences {
+  ide_ede: number;
+  ide_eve: number;
+  des_ede: null;
+  pes_arc: string;
+  nom_img: string;
+}

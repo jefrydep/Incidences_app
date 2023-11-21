@@ -13,7 +13,10 @@ import { getAvailableIncidences } from "@/services/incidencias";
 import useAvailableIncidences from "@/components/hooks/useAvailableIncidences";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Leaf } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, Leaf } from "lucide-react";
+import useIncidences from "@/components/hooks/useIncidences";
+import { useLoadingStore } from "@/zustanstore/loading/loading.store";
+import Loader from "@/components/loader/Loader";
 
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
@@ -21,15 +24,26 @@ const DynamicMap = dynamic(() => import("@/components/map/Map"), {
 const ReportesPage = () => {
   const fch_ini = "2023-11-02 14:30:45";
   const fch_fin = "2023-11-20 14:30:45";
+  const offset = 1;
+  const limit = 10;
   const {
     getAllAvailableIncidences,
     availableIncidences,
     selectedIncidence,
     setSelectedIncidence,
-  } = useAvailableIncidences(fch_ini, fch_fin);
+    paginationIncidences,
+    getLastPage,
+    getNexPage,
+    getPreviusPage,
+    statsIncidences,
+    getStartPage,
+  } = useAvailableIncidences(fch_ini, fch_fin, offset, limit);
   // const [position, setPosition] = useState<LatLngExpression>([
   //   -15.512906567247873, -70.1288912112806,
   // ]);
+  const { getAllDetailIncidents, detailsByIncident } = useIncidences(1769);
+  const loading = useLoadingStore((state) => state.loading);
+
   useEffect(() => {
     getAllAvailableIncidences();
   }, []);
@@ -39,21 +53,26 @@ const ReportesPage = () => {
       const selected = availableIncidences[index];
       console.log(selected);
       setSelectedIncidence([selected]);
-      // setAvailableIncidences([lat_eve, lon_eve]);
+      getAllDetailIncidents(selected.ide_eve, selected.ide_per);
     }
   };
+
+  const handleGotIncidences = () => {};
   return (
     <div className="w-full  h-screen pt-20 lg:pt-0 ">
       <NavBar />
       {/* <h4>Reportes </h4> */}
 
       <section className="px-2">
-        <Tabs defaultValue="reportes" className="w-full">
+        {loading && <Loader />}
+        <Tabs defaultValue="reportes" className="">
           <TabsList>
             <TabsTrigger className="" value="reportes">
               Incidencias Acogidas
             </TabsTrigger>
-            <TabsTrigger value="reportadas">Incidencias Reportadas</TabsTrigger>
+            <TabsTrigger value="reportadas">
+              Incidencias Reportadas-{statsIncidences?.totalItems}
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="reportes">
             <div className="m-2">
@@ -75,16 +94,17 @@ const ReportesPage = () => {
               </div>
               <div className="flex ">
                 <div>
-                  {/* <h1>Incidencias Reportadas</h1> */}
-                  <div className="flex flex-wrap">
+                  <div className="flex flex-row flex-wrap">
                     {availableIncidences &&
                       availableIncidences.map((inc, idx) => (
                         <div
                           key={idx}
-                          className="bg-blue-500 m-2  min-w-[10rem] rounded-md p-2  cursor-pointer"
+                          className="bg-blue-500 m-2 text-white flex gap-2 w-full justify-between lg:w-max    lg:min-w-[10rem] px-4 py-1 rounded-md lg:p-2  cursor-pointer"
                           onClick={() => handleLabelClick(idx)}
                         >
-                          <Label>{inc.des_ted}</Label>
+                          <Label className="cursor-pointer">
+                            {inc.des_ted}
+                          </Label>
                           <input className="mr-3" type="checkbox" />
                         </div>
                       ))}
@@ -92,8 +112,48 @@ const ReportesPage = () => {
                 </div>
               </div>
             </section>
-            {selectedIncidence && <DynamicMap position={selectedIncidence} />}
-            {/* {<DynamicMap />} */}
+            <div className="flex gap-2 mb-2">
+              <Button variant={"outline"} onClick={getStartPage}>
+                Inicio
+              </Button>
+              <Button
+                disabled={statsIncidences?.currentPage === 1 ? true : false}
+                onClick={getPreviusPage}
+              >
+                <span>
+                  <ArrowBigLeft />
+                </span>
+                Anterior
+              </Button>
+              <Button
+                disabled={
+                  statsIncidences?.totalPages === statsIncidences?.currentPage
+                    ? true
+                    : false
+                }
+                onClick={getNexPage}
+              >
+                Siguiente
+                <span>
+                  <ArrowBigRight />
+                </span>
+              </Button>
+              <Button variant={"outline"} onClick={getLastPage}>
+                Ultimo
+              </Button>
+            </div>
+            <div>
+              <h5>
+                Página {statsIncidences?.currentPage}de
+                {statsIncidences?.totalPages}
+              </h5>
+            </div>
+            {selectedIncidence && (
+              <DynamicMap
+                position={selectedIncidence}
+                detailsIncidences={detailsByIncident}
+              />
+            )}
           </TabsContent>
         </Tabs>
       </section>

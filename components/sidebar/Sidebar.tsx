@@ -39,7 +39,7 @@ const Sidebar = () => {
 
   const { data: session, status, update } = useSession();
   const ide_eje = useIdeEjeStore((state) => state.ide_eje);
-  console.log(ide_eje);
+  // console.log(ide_eje);
   const isOpen = useMenuStore((state) => state.isOpen);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const selectedAmbiente = useIdeAmbiente((state) => state.nom_amb);
@@ -105,7 +105,7 @@ const Sidebar = () => {
             icon={<MdReportProblem />}
             name="Reportes"
           />
-          <Accordion type="single" collapsible>
+          <Accordion type="single" collapsible={true}>
             <AccordionItem value="item-1">
               <AccordionTrigger>Tipos de incidencia</AccordionTrigger>
               <AccordionContent>
