@@ -46,6 +46,27 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
   //   html: `<img src="${marker}" style="width: 35px; height: 45px;" />`,
   //   iconSize: [35, 45],
   // });
+
+  const showImageBigger = (ide_ede: number, ide_per: number) => {
+    const imgUrl = ` ${process.env.NEXT_PUBLIC_API_URL}/smart/evento_det/file/${ide_ede}/${ide_ede}.jpg?ide_per=${ide_per}&token=${session?.user.access_token}`;
+    // Swal.fire({
+    //   // html: `<iframe src="${imgUrl}"  title="${pacient.des_mot_exa}"   width="100%" height="90vh" style="width: 100%; height: 85vh;"></iframe>`,
+    //   html: `<iframe src="${imgUrl}"     width="100%" height="90vh" style="width: 100%; height: 85vh;"></iframe>`,
+    //   width: "100%",
+    //   confirmButtonColor: "#01DFD7",
+    //   confirmButtonText: "Cerrar",
+    // });
+    Swal.fire({
+      // title: des_img,
+      // text: nom_arc,
+      imageUrl: imgUrl,
+      imageWidth: "100%",
+      imageHeight: "100%",
+      // imageAlt: des_img,
+      confirmButtonColor: "#01DFD7",
+      confirmButtonText: "Cerrar",
+    });
+  };
   return (
     <MapContainer
       className="z-10"
@@ -70,16 +91,21 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
           // icon={markerIcon}
           position={[+inc.lat_eve, +inc.lon_eve]}
         >
-          <Popup>
-            {detailsIncidences.map((detInc, idx) => (
-              <div key={idx} className="border">
-                <img
-                  src={`https://api.pagosvirtualesperu.com/smart/evento_det/file/${detInc.ide_ede}/${detInc.ide_ede}.jpg?ide_per=${inc.ide_per}&token=${session?.user.access_token}`}
-                  alt=""
-                />
-              </div>
-            ))}
-            <section className="border p-2">
+          <Popup className=" ">
+            <div className="flex flex-row gap-2">
+              {detailsIncidences.map((detInc, idx) => (
+                <div key={idx} className="border ">
+                  <img
+                    // className="h-[23rem] w-[23rem]"
+                    src={`https://api.pagosvirtualesperu.com/smart/evento_det/file/${detInc.ide_ede}/${detInc.ide_ede}.jpg?ide_per=${inc.ide_per}&token=${session?.user.access_token}`}
+                    alt=""
+                    onClick={() => showImageBigger(detInc.ide_ede, inc.ide_per)}
+                  />
+                </div>
+              ))}
+            </div>
+            <section className="border p-2 w-[30rem] ">
+              {/* <Button>Ver mas</Button> */}
               <h4 className="font-bold">Detalles de incidencia</h4>
               <div className="  ">
                 <h3 className="font-bold">{inc.des_ted}</h3>

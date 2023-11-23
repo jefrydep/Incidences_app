@@ -13,19 +13,16 @@ import { getAvailableIncidences } from "@/services/incidencias";
 import useAvailableIncidences from "@/components/hooks/useAvailableIncidences";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowBigLeft, ArrowBigRight, Leaf } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, Leaf, Search } from "lucide-react";
 import useIncidences from "@/components/hooks/useIncidences";
 import { useLoadingStore } from "@/zustanstore/loading/loading.store";
 import Loader from "@/components/loader/Loader";
+import { ErrorMessage, Form, Formik } from "formik";
 
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
 });
 const ReportesPage = () => {
-  const fch_ini = "2023-11-02 14:30:45";
-  const fch_fin = "2023-11-20 14:30:45";
-  const offset = 1;
-  const limit = 10;
   const {
     getAllAvailableIncidences,
     availableIncidences,
@@ -37,7 +34,9 @@ const ReportesPage = () => {
     getPreviusPage,
     statsIncidences,
     getStartPage,
-  } = useAvailableIncidences(fch_ini, fch_fin, offset, limit);
+    fch_ini,
+    fch_fin,
+  } = useAvailableIncidences();
 
   const { getAllDetailIncidents, detailsByIncident } = useIncidences(1769);
   const loading = useLoadingStore((state) => state.loading);
@@ -45,6 +44,7 @@ const ReportesPage = () => {
   useEffect(() => {
     getAllAvailableIncidences();
   }, []);
+
   const handleLabelClick = (index: number) => {
     //
     if (availableIncidences && availableIncidences[index]) {
@@ -54,9 +54,8 @@ const ReportesPage = () => {
       getAllDetailIncidents(selected.ide_eve, selected.ide_per);
     }
   };
-  useEffect(() => {}, []);
-
-  const handleGotIncidences = () => {};
+  console.log(availableIncidences);
+  console.log(fch_ini);
   return (
     <div className="w-full  h-screen pt-20 lg:pt-0 ">
       <NavBar />
@@ -83,16 +82,102 @@ const ReportesPage = () => {
               </Button>
             </div>
             <section>
-              <DataTable columns={columnsReports} data={[]} />
+              {availableIncidences && (
+                <DataTable
+                  columns={columnsReports}
+                  data={availableIncidences}
+                />
+              )}
             </section>{" "}
           </TabsContent>
           <TabsContent value="reportadas">
             <section className="border rounded-lg p-3 mb-2">
-              <div>
-                <Input type="text" />
-              </div>
-              <div className="flex ">
-                <div>
+              {/* <div className="flex gap-2">
+                <Input
+                  className="lg:w-[15rem]"
+                  type="date"
+                  placeholder="Fecha inicial"
+                />
+                <Input
+                  className="lg:w-[15rem]"
+                  type="date"
+                  placeholder="Fecha final"
+                />
+                <Button>Buscar</Button>
+              </div> */}
+              <Formik
+                initialValues={{
+                  startDate: fch_ini,
+                  endDate: fch_fin,
+                }}
+                onSubmit={getAllAvailableIncidences}
+                // validationSchema={validationSchemaDate}
+              >
+                {({ values, handleChange }) => (
+                  <Form className=" flex gap-2 flex-col lg:flex-row  ">
+                    <div>
+                      <section className="flex flex-col lg:flex-row gap-3    ">
+                        <div>
+                          <Label htmlFor="expedientes"> Desde</Label>
+                          <Input
+                            className="lg:max-w-[12rem] w-full "
+                            type="date"
+                            name="startDate"
+                            value={values.startDate}
+                            onChange={handleChange}
+                          />
+                          <ErrorMessage
+                            component="div"
+                            name="startDate"
+                            className="text-red-400 lg:hidden"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="expedientes"> Hasta</Label>
+                          <Input
+                            name="endDate"
+                            className="lg:max-w-[12rem] w-full "
+                            type="date"
+                            value={values.endDate}
+                            onChange={handleChange}
+                          />
+                          <ErrorMessage
+                            component="div"
+                            name="endDate"
+                            className="text-red-400  lg:hidden"
+                          />
+                        </div>
+                        <div className="flex items-end">
+                          <Button className="w-full" type="submit">
+                            <span>
+                              <Search />
+                            </span>
+                            Buscar
+                          </Button>
+                        </div>
+                      </section>
+                      <ErrorMessage
+                        component="div"
+                        name="startDate"
+                        className="text-red-400 hidden lg:block"
+                      />
+                      <ErrorMessage
+                        component="div"
+                        name="endDate"
+                        className="text-red-400 hidden lg:block"
+                      />
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+              <div className="flex gap-2 ">
+                {availableIncidences && (
+                  <DataTable
+                    columns={columnsReports}
+                    data={availableIncidences}
+                  />
+                )}
+                {/* <div>
                   <div className="flex flex-row flex-wrap">
                     {availableIncidences &&
                       availableIncidences.map((inc, idx) => (
@@ -108,51 +193,58 @@ const ReportesPage = () => {
                         </div>
                       ))}
                   </div>
+                </div> */}
+                <div>
+                  <div className="flex gap-2 mb-2">
+                    <Button variant={"outline"} onClick={getStartPage}>
+                      Inicio
+                    </Button>
+                    <Button
+                      disabled={
+                        statsIncidences?.currentPage === 1 ? true : false
+                      }
+                      onClick={getPreviusPage}
+                    >
+                      <span>
+                        <ArrowBigLeft />
+                      </span>
+                      Anterior
+                    </Button>
+                    <Button
+                      disabled={
+                        statsIncidences?.totalPages ===
+                        statsIncidences?.currentPage
+                          ? true
+                          : false
+                      }
+                      onClick={getNexPage}
+                    >
+                      Siguiente
+                      <span>
+                        <ArrowBigRight />
+                      </span>
+                    </Button>
+                    <Button variant={"outline"} onClick={getLastPage}>
+                      Ultimo
+                    </Button>
+                  </div>
+                  <section>
+                    <div>
+                      <h5>
+                        Página {statsIncidences?.currentPage}de
+                        {statsIncidences?.totalPages}
+                      </h5>
+                    </div>
+                    {selectedIncidence && (
+                      <DynamicMap
+                        position={selectedIncidence}
+                        detailsIncidences={detailsByIncident}
+                      />
+                    )}
+                  </section>
                 </div>
               </div>
             </section>
-            <div className="flex gap-2 mb-2">
-              <Button variant={"outline"} onClick={getStartPage}>
-                Inicio
-              </Button>
-              <Button
-                disabled={statsIncidences?.currentPage === 1 ? true : false}
-                onClick={getPreviusPage}
-              >
-                <span>
-                  <ArrowBigLeft />
-                </span>
-                Anterior
-              </Button>
-              <Button
-                disabled={
-                  statsIncidences?.totalPages === statsIncidences?.currentPage
-                    ? true
-                    : false
-                }
-                onClick={getNexPage}
-              >
-                Siguiente
-                <span>
-                  <ArrowBigRight />
-                </span>
-              </Button>
-              <Button variant={"outline"} onClick={getLastPage}>
-                Ultimo
-              </Button>
-            </div>
-            <div>
-              <h5>
-                Página {statsIncidences?.currentPage}de
-                {statsIncidences?.totalPages}
-              </h5>
-            </div>
-            {selectedIncidence && (
-              <DynamicMap
-                position={selectedIncidence}
-                detailsIncidences={detailsByIncident}
-              />
-            )}
           </TabsContent>
         </Tabs>
       </section>

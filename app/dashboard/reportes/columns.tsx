@@ -1,35 +1,42 @@
 "use client";
 
+import useAvailableIncidences from "@/components/hooks/useAvailableIncidences";
+import useIncidences from "@/components/hooks/useIncidences";
+import SeeLocation from "@/components/reportes/SeeLocation";
+import { Button } from "@/components/ui/button";
+import { Item } from "@/interface/AvailableIncidences";
 import { ColumnDef } from "@tanstack/react-table";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
 
-export const columnsReports: ColumnDef<Payment>[] = [
+export const columnsReports: ColumnDef<Item>[] = [
   {
-    accessorKey: "status",
+    accessorKey: "nom_com",
     header: "Nombre",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "des_ted",
+    header: "Descripción",
   },
   {
-    accessorKey: "amount",
+    accessorKey: "dir_eve",
+    header: "Dirección",
+  },
+  {
+    accessorKey: "fch_hra_txt",
     header: "Hora",
   },
   {
-    accessorKey: "d",
-    header: "Incidencia",
-  },
-  {
-    accessorKey: "te",
-    header: "Ubicación",
+    // accessorKey: "sd",
+    header: "Contactos",
+    cell: ({ row }) => {
+      return (
+        <SeeLocation index={row.index} />
+        // <Button onClick={() => handleLabelClick(row.index)}>
+        //   {/* <Button>Ver Contactos */}
+        // </Button>
+      );
+    },
   },
 ];

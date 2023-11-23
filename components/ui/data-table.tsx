@@ -132,7 +132,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {/* pagination  */}
-      <div className="flex items-center justify-start space-x-2 py-2">
+      {/* <div className="flex items-center justify-start space-x-2 py-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -173,7 +173,7 @@ export function DataTable<TData, TValue>({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </div>
+      </div> */}
     </div>
   );
 }

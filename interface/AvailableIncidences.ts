@@ -10,6 +10,7 @@ export interface Item {
   ide_ted: number;
   act_ina: number;
   nro_itm: number;
+  nom_com: string;
   des_ted: string;
   fch_hra: Date;
   fch_hra_txt: string;
@@ -19,6 +20,7 @@ export interface Item {
   ide_dis: number;
   dir_eve: string;
   ide_per: number;
+  contactos: [];
 }
 
 export interface Links {
