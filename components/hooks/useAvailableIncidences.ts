@@ -12,13 +12,26 @@ import { dateToStringWithTime } from "@/utils/dateToString";
 import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
 import React, { useState } from "react";
 import useIncidences from "./useIncidences";
+import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 
 const useAvailableIncidences = () => {
-  const [availableIncidences, setAvailableIncidences] = useState<Item[]>();
-  const [selectedIncidence, setSelectedIncidence] = useState<Item[]>();
+  const setAvailableIncidences = useAvailableIncidencesStore(
+    (state) => state.setAvailableIncidences
+  );
+  const availableIncidences = useAvailableIncidencesStore(
+    (state) => state.availableIncidences
+  );
+  const setSelectedIncidence = useAvailableIncidencesStore(
+    (state) => state.setSelectedIncidences
+  );
+  const selectedIncidence = useAvailableIncidencesStore(
+    (state) => state.selectedIncidence
+  );
+
+  // const [availableIncidenceFs, setAvailableIncidences] = useState<Item[]>();
+  // const [selectedIncidence, setSelectedIncidence] = useState<Item[]>();
   const [paginationIncidences, setPaginationIncidence] = useState<Links>();
   const [statsIncidences, setstatsIncidences] = useState<Meta>();
-  const { getAllDetailIncidents, detailsByIncident } = useIncidences(1769);
   const ide_amb = useIdeAmbiente((state) => state.ide_amb);
   const currentDate = new Date();
   const startDateValue = new Date();
@@ -39,7 +52,12 @@ const useAvailableIncidences = () => {
       offset,
       limit
     );
-    setAvailableIncidences(data.items);
+    const IncidencesIsChecked = data.items.map((inc: Item) => ({
+      ...inc,
+      isSelected: false,
+    }));
+
+    setAvailableIncidences(IncidencesIsChecked);
     setSelectedIncidence(data.items);
     setPaginationIncidence(data.links);
     setstatsIncidences(data.meta);
@@ -101,16 +119,6 @@ const useAvailableIncidences = () => {
   };
 
   console.log(availableIncidences);
-  const handleLabelClick = (index: number) => {
-    //
-    console.log("hola esd");
-    if (availableIncidences && availableIncidences[index]) {
-      const selected = availableIncidences[index];
-      console.log(selected);
-      setSelectedIncidence([selected]);
-      getAllDetailIncidents(selected.ide_eve, selected.ide_per);
-    }
-  };
 
   return {
     getAllAvailableIncidences,
@@ -124,7 +132,6 @@ const useAvailableIncidences = () => {
     getPreviusPage,
     statsIncidences,
     getStartPage,
-    handleLabelClick,
     fch_ini,
     fch_fin,
   };

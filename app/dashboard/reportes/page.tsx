@@ -18,6 +18,7 @@ import useIncidences from "@/components/hooks/useIncidences";
 import { useLoadingStore } from "@/zustanstore/loading/loading.store";
 import Loader from "@/components/loader/Loader";
 import { ErrorMessage, Form, Formik } from "formik";
+import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
@@ -38,29 +39,41 @@ const ReportesPage = () => {
     fch_fin,
   } = useAvailableIncidences();
 
-  const { getAllDetailIncidents, detailsByIncident } = useIncidences(1769);
+  const detailsByIncidence = useAvailableIncidencesStore(
+    (state) => state.detailsByIncidence
+  );
+  console.log(detailsByIncidence);
   const loading = useLoadingStore((state) => state.loading);
-
+  const checkedIncidences = useAvailableIncidencesStore(
+    (state) => state.checkedIncidence
+  );
+  console.log(checkedIncidences);
   useEffect(() => {
     getAllAvailableIncidences();
   }, []);
 
-  const handleLabelClick = (index: number) => {
-    //
-    if (availableIncidences && availableIncidences[index]) {
-      const selected = availableIncidences[index];
-      console.log(selected);
-      setSelectedIncidence([selected]);
-      getAllDetailIncidents(selected.ide_eve, selected.ide_per);
-    }
-  };
-  console.log(availableIncidences);
-  console.log(fch_ini);
+  // const handleLabelClick = (index: number) => {
+  //   //
+  //   if (availableIncidences && availableIncidences[index]) {
+  //     const selected = availableIncidences[index];
+  //     console.log(selected);
+  //     setSelectedIncidence([selected]);
+  //     getAllDetailIncidents(selected.ide_eve, selected.ide_per);
+  //   }
+  // };
+
+  // console.log(availableIncidences);
+  // console.log(fch_ini);
+  // const checkedAvailableIncidences = availableIncidences.map((inc, idx) => ({
+  //   ...inc,
+  //   isSelected: false,
+  // }));
+
+  // console.log(checkedAvailableIncidences);
   return (
     <div className="w-full  h-screen pt-20 lg:pt-0 ">
       <NavBar />
       {/* <h4>Reportes </h4> */}
-
       <section className="px-2">
         {loading && <Loader />}
         <Tabs defaultValue="reportes" className="">
@@ -238,7 +251,7 @@ const ReportesPage = () => {
                     {selectedIncidence && (
                       <DynamicMap
                         position={selectedIncidence}
-                        detailsIncidences={detailsByIncident}
+                        detailsIncidences={detailsByIncidence}
                       />
                     )}
                   </section>

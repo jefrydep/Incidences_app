@@ -1,11 +1,11 @@
 "use client";
 
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import L, { IconOptions, LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MdCenterFocusStrong, MdGpsFixed } from "react-icons/md";
 import { Locate } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import icon from "leaflet/dist/images/marker-icon-2x.png";
 import markerSvg from "@/public/markergps.svg";
 import marker from "@/public/marker.png";
@@ -38,14 +38,34 @@ const getImage = () => {
     title: "Accidente Enmtre dos vehiculos",
   });
 };
+const MapRef = ({ position }: any) => {
+  const map = useMap();
+  useEffect(() => {
+    if (map) map.flyTo({ lat: -15, lng: -70 });
+  }, [map]);
+
+  useEffect(() => {
+    console.log(map);
+    console.log(position[0]);
+
+    if (map) map.flyTo({ lat: position[0].lat_eve, lng: position[0].lon_eve });
+  }, [position]);
+
+  return <></>;
+};
 
 const Map = ({ position, detailsIncidences }: MapInterface) => {
   const { data: session } = useSession();
+  const [centerPosition, setCenterPosition] = useState<any>([
+    -15.512906567247873, -70.1288912112806,
+  ]);
 
-  // const markerIcon = L.divIcon({
-  //   html: `<img src="${marker}" style="width: 35px; height: 45px;" />`,
-  //   iconSize: [35, 45],
-  // });
+  useEffect(() => {
+    if (position) {
+      setCenterPosition([+position[0].lat_eve, +position[0].lon_eve]);
+    }
+  }, [position]);
+  console.log(centerPosition);
 
   const showImageBigger = (ide_ede: number, ide_per: number) => {
     const imgUrl = ` ${process.env.NEXT_PUBLIC_API_URL}/smart/evento_det/file/${ide_ede}/${ide_ede}.jpg?ide_per=${ide_per}&token=${session?.user.access_token}`;
@@ -72,9 +92,11 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
       className="z-10"
       // center={[positi]}
 
-      center={[-15.512906567247873, -70.1288912112806]}
+      center={centerPosition}
       zoom={13}
-      scrollWheelZoom={false}
+      scrollWheelZoom={true}
+      // boxZoom={true}
+      // doubleClickZoom={true}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -84,11 +106,13 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
         url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_API_key}`}
         attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>'
       /> */}
+      <MapRef position={position} />
       {position.map((inc, idx) => (
         <Marker
           key={idx}
           draggable={true}
           // icon={markerIcon}
+
           position={[+inc.lat_eve, +inc.lon_eve]}
         >
           <Popup className=" ">

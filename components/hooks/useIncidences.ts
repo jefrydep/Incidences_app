@@ -7,17 +7,22 @@ import {
   sendIncidencesSaved,
 } from "@/services/incidencias";
 import { useIncidenciasStore } from "@/zustanstore";
+import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const useIncidences = (ide_eje: number) => {
+  const setDetailsByIncidence = useAvailableIncidencesStore(
+    (state) => state.setDetailsByIncidence
+  );
+
   const setIncidences = useIncidenciasStore((state) => state.setIncidencias);
   const [busqueda, setBusqueda] = useState<string>("");
   const incidences = useIncidenciasStore((state) => state.incidencias);
   const [incidencesFiltered, setIncidencesFiltered] = useState(incidences);
-  const [detailsByIncident, setDetailsByIncident] = useState<
-    DetailsIncidences[]
-  >([]);
+  // const [detailsByIncident, setDetailsByIncident] = useState<
+  //   DetailsIncidences[]
+  // >([]);
 
   useEffect(() => {
     setIncidencesFiltered(incidences);
@@ -72,7 +77,7 @@ const useIncidences = (ide_eje: number) => {
   const getAllDetailIncidents = async (ide_eve: number, ide_per: number) => {
     const { data } = await getDetailIncidents(ide_eve, ide_per);
     if (data) {
-      setDetailsByIncident(data);
+      setDetailsByIncidence(data);
     }
 
     console.log(data);
@@ -86,7 +91,7 @@ const useIncidences = (ide_eje: number) => {
     sendIncidents,
     busqueda,
     getAllDetailIncidents,
-    detailsByIncident,
+    // detailsByIncident,
   };
 };
 

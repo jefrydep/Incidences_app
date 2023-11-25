@@ -5,6 +5,7 @@ export interface AvailableIncidences {
 }
 
 export interface Item {
+  isSelected?: boolean;
   ide_eve: number;
   ano_eje: string;
   ide_ted: number;
