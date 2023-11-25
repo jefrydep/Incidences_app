@@ -183,6 +183,9 @@ const ReportesPage = () => {
                   </Form>
                 )}
               </Formik>
+              <div>
+                <Button>Guardar Seleccion</Button>
+              </div>
               <div className="flex gap-2 ">
                 {availableIncidences && (
                   <DataTable
