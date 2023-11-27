@@ -22,6 +22,8 @@ import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/a
 import CustomMolal from "@/components/customUI/CustomModal";
 import { columsChecked } from "./columnsChecked";
 import { useAmbienteStore } from "@/zustanstore/ambiente/ambiente.store";
+import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
+import useGroupIncidence from "@/components/hooks/useGroupIncidence";
 
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
@@ -55,13 +57,14 @@ const ReportesPage = () => {
   const selectedCheckedIncidence = useAvailableIncidencesStore(
     (state) => state.selectedCheckedIncidence
   );
-  const ambientes = useAmbienteStore((state) => state.ambientes);
-  console.log(ambientes);
+  const ambiente = useIdeAmbiente((state) => state.ambiente);
+  console.log(ambiente);
 
   const loading = useLoadingStore((state) => state.loading);
   const checkedIncidences = useAvailableIncidencesStore(
     (state) => state.checkedIncidence
   );
+  const { getAnswerCorrelatives } = useGroupIncidence();
   useEffect(() => {
     getAllAvailableIncidences();
   }, []);
@@ -72,8 +75,14 @@ const ReportesPage = () => {
   }, [checkedIncidences]);
   const sch_tab = "smart.evento_agrupa";
   console.log(checkedIncidences);
-  // nro_gor
+  useEffect(() => {
+    if (checkedIncidences.length > 0) {
+      getAnswerCorrelatives();
+    }
+  }, [checkedIncidences]);
+
   return (
+    // nro_gor
     <div className="w-full  h-screen overflow-y-auto pt-20 lg:pt-0 ">
       {/* <div className="w-full overflow-y-auto    lg:h-screen    "></div> */}
       <NavBar />

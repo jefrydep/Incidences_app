@@ -25,7 +25,7 @@ const NavBar = () => {
   const { data: session, status, update } = useSession();
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const selectedAmbiente = useIdeAmbiente((state) => state.nom_amb);
+  const selectedAmbiente = useIdeAmbiente((state) => state.ambiente);
   const ambientes = session?.user.data.ambientes;
   // useEffect(() => {
   //   if (!selectedAmbiente) {
@@ -34,7 +34,8 @@ const NavBar = () => {
   // }, [selectedAmbiente]);
 
   // console.log(ambientes);
-
+  console.log(selectedAmbiente);
+  console.log(ambientes);
   return (
     // <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0  z-30 top-0">
     <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0 z-30 lg:z-[60] top-0">
@@ -43,7 +44,7 @@ const NavBar = () => {
           <div>
             <div>
               <Button onClick={() => setIsOpenModal(true)}>
-                {selectedAmbiente}{" "}
+                {selectedAmbiente.length > 0 && selectedAmbiente[0].nom_amb}{" "}
               </Button>
             </div>
             <CustomMolal isOpen={isOpenModal}>
@@ -70,6 +71,7 @@ const NavBar = () => {
                   {ambientes &&
                     ambientes?.map((amb, index) => (
                       <CustomCard
+                        ambiente={ambientes}
                         setIsOpenModal={setIsOpenModal}
                         key={index}
                         ide_amb={amb.ide_amb}

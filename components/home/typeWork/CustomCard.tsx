@@ -4,6 +4,7 @@ import { getAmbiente } from "@/services/ambiente";
 import { useIdeEjeStore } from "@/zustanstore";
 import { useAmbienteStore } from "@/zustanstore/ambiente/ambiente.store";
 import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
+import { Ambiente } from "next-auth";
 import React from "react";
 
 interface CardInteface {
@@ -12,7 +13,11 @@ interface CardInteface {
   nombreDeAmbiente: string;
   siglas: string;
   ide_amb: number;
+  ambiente: Ambiente[];
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+interface CarInterface {
+  ambiente: Ambiente[];
 }
 const CustomCard = ({
   año,
@@ -21,21 +26,30 @@ const CustomCard = ({
   siglas,
   ide_amb,
   setIsOpenModal,
+  ambiente,
 }: CardInteface) => {
   const ide_eje = useIdeEjeStore((state) => state.ide_eje);
-  const setAmbiente = useAmbienteStore((state) => state.setAmbientes);
+  const setAmbientes = useAmbienteStore((state) => state.setAmbientes);
   const setIdeAmb = useIdeAmbiente((state) => state.setIdeAmb);
-  const setNomAmb = useIdeAmbiente((state) => state.setNomAmb);
-
+  const setAmbiente = useIdeAmbiente((state) => state.setAmbiente);
+  console.log(ambiente);
   const getIncidencesByPlatform = async () => {
     console.log(ide_amb);
     setIsOpenModal(false);
     setIdeAmb(ide_amb);
-    setNomAmb(nombreDeAmbiente);
+    if (ide_amb) {
+      const ambienteSelected = ambiente.filter(
+        (amb) => amb.ide_amb === ide_amb
+      );
+      setAmbiente(ambienteSelected);
+    }
+    // setAmbiente()
+    // setNomAmb(nombreDeAmbiente);
     const response = await getAmbiente(ide_eje, ide_amb);
+
     const res = response.data;
     if (res) {
-      setAmbiente(res.met_dat);
+      setAmbientes(res.met_dat);
     }
     console.log(res);
   };

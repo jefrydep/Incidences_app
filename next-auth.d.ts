@@ -36,7 +36,7 @@ declare module "next-auth" {
     ide_p_c_wat: null;
   }
 
-  interface Ambiente {
+  export interface Ambiente {
     ano_eje: string;
     car_goo: string;
     cod_amb: string;
