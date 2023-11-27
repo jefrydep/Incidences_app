@@ -4,7 +4,7 @@ import { DataTable } from "@/components/ui/data-table";
 import React, { useEffect, useState } from "react";
 import { columnsReports } from "./columns";
 import { Button } from "@/components/ui/button";
-import { MdAddLocation } from "react-icons/md";
+import { MdAddLocation, MdCancel } from "react-icons/md";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import dynamic from "next/dynamic";
 import L, { IconOptions, LatLngExpression } from "leaflet";
@@ -19,11 +19,15 @@ import { useLoadingStore } from "@/zustanstore/loading/loading.store";
 import Loader from "@/components/loader/Loader";
 import { ErrorMessage, Form, Formik } from "formik";
 import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
+import CustomMolal from "@/components/customUI/CustomModal";
+import { columsChecked } from "./columnsChecked";
+import { useAmbienteStore } from "@/zustanstore/ambiente/ambiente.store";
 
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
 });
 const ReportesPage = () => {
+  const [isOpenModal, setisOpenModal] = useState(false);
   const {
     getAllAvailableIncidences,
     availableIncidences,
@@ -42,36 +46,36 @@ const ReportesPage = () => {
   const detailsByIncidence = useAvailableIncidencesStore(
     (state) => state.detailsByIncidence
   );
-  console.log(detailsByIncidence);
+  const detailsByCheckedIncidence = useAvailableIncidencesStore(
+    (state) => state.detailsBycheckedIncidence
+  );
+  const setSelectedCheckedIncidence = useAvailableIncidencesStore(
+    (state) => state.setSelectedCheckedIncidence
+  );
+  const selectedCheckedIncidence = useAvailableIncidencesStore(
+    (state) => state.selectedCheckedIncidence
+  );
+  const ambientes = useAmbienteStore((state) => state.ambientes);
+  console.log(ambientes);
+
   const loading = useLoadingStore((state) => state.loading);
   const checkedIncidences = useAvailableIncidencesStore(
     (state) => state.checkedIncidence
   );
-  console.log(checkedIncidences);
   useEffect(() => {
     getAllAvailableIncidences();
   }, []);
-
-  // const handleLabelClick = (index: number) => {
-  //   //
-  //   if (availableIncidences && availableIncidences[index]) {
-  //     const selected = availableIncidences[index];
-  //     console.log(selected);
-  //     setSelectedIncidence([selected]);
-  //     getAllDetailIncidents(selected.ide_eve, selected.ide_per);
-  //   }
-  // };
-
-  // console.log(availableIncidences);
-  // console.log(fch_ini);
-  // const checkedAvailableIncidences = availableIncidences.map((inc, idx) => ({
-  //   ...inc,
-  //   isSelected: false,
-  // }));
-
-  // console.log(checkedAvailableIncidences);
+  useEffect(() => {
+    if (checkedIncidences) {
+      setSelectedCheckedIncidence(checkedIncidences);
+    }
+  }, [checkedIncidences]);
+  const sch_tab = "smart.evento_agrupa";
+  console.log(checkedIncidences);
+  // nro_gor
   return (
-    <div className="w-full  h-screen pt-20 lg:pt-0 ">
+    <div className="w-full  h-screen overflow-y-auto pt-20 lg:pt-0 ">
+      {/* <div className="w-full overflow-y-auto    lg:h-screen    "></div> */}
       <NavBar />
       {/* <h4>Reportes </h4> */}
       <section className="px-2">
@@ -105,93 +109,145 @@ const ReportesPage = () => {
           </TabsContent>
           <TabsContent value="reportadas">
             <section className="border rounded-lg p-3 mb-2">
-              {/* <div className="flex gap-2">
-                <Input
-                  className="lg:w-[15rem]"
-                  type="date"
-                  placeholder="Fecha inicial"
-                />
-                <Input
-                  className="lg:w-[15rem]"
-                  type="date"
-                  placeholder="Fecha final"
-                />
-                <Button>Buscar</Button>
-              </div> */}
-              <Formik
-                initialValues={{
-                  startDate: fch_ini,
-                  endDate: fch_fin,
-                }}
-                onSubmit={getAllAvailableIncidences}
-                // validationSchema={validationSchemaDate}
-              >
-                {({ values, handleChange }) => (
-                  <Form className=" flex gap-2 flex-col lg:flex-row  ">
-                    <div>
-                      <section className="flex flex-col lg:flex-row gap-3    ">
-                        <div>
-                          <Label htmlFor="expedientes"> Desde</Label>
-                          <Input
-                            className="lg:max-w-[12rem] w-full "
-                            type="date"
-                            name="startDate"
-                            value={values.startDate}
-                            onChange={handleChange}
-                          />
-                          <ErrorMessage
-                            component="div"
-                            name="startDate"
-                            className="text-red-400 lg:hidden"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="expedientes"> Hasta</Label>
-                          <Input
-                            name="endDate"
-                            className="lg:max-w-[12rem] w-full "
-                            type="date"
-                            value={values.endDate}
-                            onChange={handleChange}
-                          />
-                          <ErrorMessage
-                            component="div"
-                            name="endDate"
-                            className="text-red-400  lg:hidden"
-                          />
-                        </div>
-                        <div className="flex items-end">
-                          <Button className="w-full" type="submit">
-                            <span>
-                              <Search />
-                            </span>
-                            Buscar
-                          </Button>
-                        </div>
-                      </section>
-                      <ErrorMessage
-                        component="div"
-                        name="startDate"
-                        className="text-red-400 hidden lg:block"
-                      />
-                      <ErrorMessage
-                        component="div"
-                        name="endDate"
-                        className="text-red-400 hidden lg:block"
-                      />
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-              <div>
-                <Button>Guardar Seleccion</Button>
+              <div className="flex gap-8">
+                <Formik
+                  initialValues={{
+                    startDate: fch_ini,
+                    endDate: fch_fin,
+                  }}
+                  onSubmit={getAllAvailableIncidences}
+                  // validationSchema={validationSchemaDate}
+                >
+                  {({ values, handleChange }) => (
+                    <Form className=" flex gap-2 flex-col lg:flex-row  ">
+                      <div>
+                        <section className="flex flex-col lg:flex-row gap-3    ">
+                          <div>
+                            <Label htmlFor="expedientes"> Desde</Label>
+                            <Input
+                              className="lg:max-w-[12rem] w-full "
+                              type="date"
+                              name="startDate"
+                              value={values.startDate}
+                              onChange={handleChange}
+                            />
+                            <ErrorMessage
+                              component="div"
+                              name="startDate"
+                              className="text-red-400 lg:hidden"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="expedientes"> Hasta</Label>
+                            <Input
+                              name="endDate"
+                              className="lg:max-w-[12rem] w-full "
+                              type="date"
+                              value={values.endDate}
+                              onChange={handleChange}
+                            />
+                            <ErrorMessage
+                              component="div"
+                              name="endDate"
+                              className="text-red-400  lg:hidden"
+                            />
+                          </div>
+                          <div className="flex items-end">
+                            <Button className="w-full" type="submit">
+                              <span>
+                                <Search />
+                              </span>
+                              Buscar
+                            </Button>
+                          </div>
+                        </section>
+                        <ErrorMessage
+                          component="div"
+                          name="startDate"
+                          className="text-red-400 hidden lg:block"
+                        />
+                        <ErrorMessage
+                          component="div"
+                          name="endDate"
+                          className="text-red-400 hidden lg:block"
+                        />
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+                <div className="  flex flex-col justify-end">
+                  <Button onClick={() => setisOpenModal(true)}>
+                    Guardar Seleccion
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-2 ">
+
+              <div className=" ">
+                <CustomMolal isOpen={isOpenModal}>
+                  <section className="bg-white w-[85vw] ">
+                    <div className="flex w-full  justify-end ">
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setisOpenModal(false);
+                        }}
+                      >
+                        <MdCancel
+                          title="Cerrar
+                          "
+                          className="hover:text-red-400 text-red-600"
+                          size={45}
+                        />
+                      </div>
+                    </div>
+                    <h5>Incidencias</h5>
+                    <div className=" flex gap-2 mb-2">
+                      {/* <Formik>
+                        <Form> */}
+                      <div className=" flex gap-2">
+                        <label htmlFor="">registrars</label>
+                        <Input className=" " />
+                      </div>
+                      <div className=" flex gap-2">
+                        <label htmlFor="">registrar</label>
+                        <Input />
+                      </div>
+                      <div className=" flex gap-2">
+                        <label htmlFor="">registrar</label>
+                        <Input />
+                      </div>
+                      <div className=" flex gap-2">
+                        <label htmlFor="">registrar</label>
+                        <Input />
+                      </div>
+                      <Button>Enviar</Button>
+                      {/* </Form>
+                      </Formik> */}
+                    </div>
+
+                    <div className="">
+                      <div className="flex ">
+                        <DataTable
+                          columns={columsChecked}
+                          data={checkedIncidences}
+                        />
+                        <DynamicMap
+                          position={selectedCheckedIncidence}
+                          detailsIncidences={detailsByCheckedIncidence}
+                        />
+                      </div>
+                    </div>
+                  </section>
+                </CustomMolal>
+              </div>
+              <div className="flex gap-2 mt-2 ">
                 {availableIncidences && (
-                  <DataTable
-                    columns={columnsReports}
-                    data={availableIncidences}
-                  />
+                  <div className=" h-[75vh]   overflow-scroll  ">
+                    <DataTable
+                      columns={columnsReports}
+                      data={availableIncidences}
+                    />
+                  </div>
                 )}
                 {/* <div>
                   <div className="flex flex-row flex-wrap">
@@ -210,7 +266,7 @@ const ReportesPage = () => {
                       ))}
                   </div>
                 </div> */}
-                <div>
+                <div className=" ">
                   <div className="flex gap-2 mb-2">
                     <Button variant={"outline"} onClick={getStartPage}>
                       Inicio

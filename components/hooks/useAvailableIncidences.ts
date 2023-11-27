@@ -38,8 +38,10 @@ const useAvailableIncidences = () => {
   startDateValue.setDate(currentDate.getDate() - 31);
   const fch_ini = dateToStringWithTime(startDateValue);
   const fch_fin = dateToStringWithTime(currentDate);
-  console.log(fch_ini);
-  console.log(fch_fin);
+  const currentTime = dateToStringWithTime(currentDate, true);
+  // console.log(currentTime);
+  // console.log(fch_ini);
+  // console.log(fch_fin);
 
   const offset = 1;
   const limit = 9;
@@ -61,18 +63,20 @@ const useAvailableIncidences = () => {
     setSelectedIncidence(data.items);
     setPaginationIncidence(data.links);
     setstatsIncidences(data.meta);
-
-    console.log(data);
   };
-
+  // no0ta pasar incidencias checked a toas las funciones paginadas
   const getPreviusPage = async () => {
     const prev = paginationIncidences?.previous;
     const { data } = await tramiteApi.get(
       `/${prev}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
     );
-    console.log(data);
+    const IncidencesIsChecked = data.items.map((inc: Item) => ({
+      ...inc,
+      isSelected: false,
+    }));
+    // console.log(data);
     if (data) {
-      setAvailableIncidences(data.items);
+      setAvailableIncidences(IncidencesIsChecked);
       setSelectedIncidence(data.items);
       setPaginationIncidence(data.links);
       setstatsIncidences(data.meta);
@@ -84,8 +88,12 @@ const useAvailableIncidences = () => {
       `/${next}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
     );
     console.log(data);
+    const IncidencesIsChecked = data.items.map((inc: Item) => ({
+      ...inc,
+      isSelected: false,
+    }));
     if (data) {
-      setAvailableIncidences(data.items);
+      setAvailableIncidences(IncidencesIsChecked);
       setSelectedIncidence(data.items);
       setPaginationIncidence(data.links);
       setstatsIncidences(data.meta);
@@ -96,9 +104,12 @@ const useAvailableIncidences = () => {
     const { data } = await tramiteApi.get(
       `/${last}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
     );
-    console.log(data);
+    const IncidencesIsChecked = data.items.map((inc: Item) => ({
+      ...inc,
+      isSelected: false,
+    }));
     if (data) {
-      setAvailableIncidences(data.items);
+      setAvailableIncidences(IncidencesIsChecked);
       setSelectedIncidence(data.items);
       setPaginationIncidence(data.links);
       setstatsIncidences(data.meta);
@@ -109,16 +120,17 @@ const useAvailableIncidences = () => {
     const { data } = await tramiteApi.get(
       `/${start}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
     );
-    console.log(data);
+    const IncidencesIsChecked = data.items.map((inc: Item) => ({
+      ...inc,
+      isSelected: false,
+    }));
     if (data) {
-      setAvailableIncidences(data.items);
+      setAvailableIncidences(IncidencesIsChecked);
       setSelectedIncidence(data.items);
       setPaginationIncidence(data.links);
       setstatsIncidences(data.meta);
     }
   };
-
-  console.log(availableIncidences);
 
   return {
     getAllAvailableIncidences,

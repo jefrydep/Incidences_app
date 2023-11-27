@@ -15,6 +15,9 @@ const useIncidences = (ide_eje: number) => {
   const setDetailsByIncidence = useAvailableIncidencesStore(
     (state) => state.setDetailsByIncidence
   );
+  const setDetailsByCheckedIncidences = useAvailableIncidencesStore(
+    (state) => state.setDetailsByCheckedIncidences
+  );
 
   const setIncidences = useIncidenciasStore((state) => state.setIncidencias);
   const [busqueda, setBusqueda] = useState<string>("");
@@ -78,6 +81,7 @@ const useIncidences = (ide_eje: number) => {
     const { data } = await getDetailIncidents(ide_eve, ide_per);
     if (data) {
       setDetailsByIncidence(data);
+      // setDetailsByCheckedIncidences(data);
     }
 
     console.log(data);

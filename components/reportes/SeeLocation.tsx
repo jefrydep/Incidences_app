@@ -7,8 +7,15 @@ import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/a
 interface ValuesLocation {
   index: number;
 }
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { MapContainer as LeafletMapContainer, useMap } from "react-leaflet";
+import { LocateFixedIcon } from "lucide-react";
 const SeeLocation = ({ index }: ValuesLocation) => {
   const availableIncidences = useAvailableIncidencesStore(
     (state) => state.availableIncidences
@@ -21,7 +28,6 @@ const SeeLocation = ({ index }: ValuesLocation) => {
   // const mapRef = useRef<LeafletMapContainer>(null);
   const HandleSelectedIncidence = (index: number) => {
     //
-    console.log("hola esd");
     if (availableIncidences && availableIncidences[index]) {
       const selected = availableIncidences[index];
       console.log(selected);
@@ -33,10 +39,24 @@ const SeeLocation = ({ index }: ValuesLocation) => {
   };
 
   return (
-    <Button type="button" onClick={() => HandleSelectedIncidence(index)}>
-      {/* <Button>Ver Contactos */}
-      Ver marcador
-    </Button>
+    <>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              onClick={() => HandleSelectedIncidence(index)}
+            >
+              {/* <Button>Ver Contactos */}
+              <LocateFixedIcon />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Ver marcador</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </>
   );
 };
 

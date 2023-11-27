@@ -4,6 +4,7 @@ import useAvailableIncidences from "@/components/hooks/useAvailableIncidences";
 import useIncidences from "@/components/hooks/useIncidences";
 import SeeLocation from "@/components/reportes/SeeLocation";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Item } from "@/interface/AvailableIncidences";
 import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 import { ColumnDef } from "@tanstack/react-table";
@@ -14,24 +15,53 @@ import { useState } from "react";
 
 export const columnsReports: ColumnDef<Item>[] = [
   {
-    accessorKey: "nom_com",
-    header: "Nombre",
+    // accessorKey: "sd",
+    header: "Detalles",
+    cell: ({ row }) => {
+      return (
+        <article className="shadow-lg rounded-lg p-2 border flex flex-col gap-2">
+          <div className=" flex ">
+            <h5 className="mr-3 font-bold">Descripcion:</h5>
+            <span className=" ">{row.original.des_ted}</span>
+          </div>
+          <div className=" flex    ">
+            <h5 className="mr-3 font-bold">Reportante:</h5>
+            <span>{row.original.nom_com}</span>
+          </div>
+          <div className=" flex   ">
+            <h5 className="mr-3 font-bold">Direccion:</h5>
+            <span>{row.original.dir_eve}</span>
+          </div>
+          <div className=" flex  ">
+            <h5 className="mr-3 font-bold">Hora:</h5>
+            <span>{row.original.fch_hra_txt}</span>
+          </div>
+        </article>
+        // <Button onClick={() => handleLabelClick(row.index)}>
+        //   {/* <Button>Ver Contactos */}
+        // </Button>
+      );
+    },
   },
-  {
-    accessorKey: "des_ted",
-    header: "Descripción",
-  },
-  {
-    accessorKey: "dir_eve",
-    header: "Dirección",
-  },
-  {
-    accessorKey: "fch_hra_txt",
-    header: "Hora",
-  },
+  // {
+  //   accessorKey: "nom_com",
+  //   header: "Nombre",
+  // },
+  // {
+  //   accessorKey: "des_ted",
+  //   header: "Descripción",
+  // },
+  // {
+  //   accessorKey: "dir_eve",
+  //   header: "Dirección",
+  // },
+  // {
+  //   accessorKey: "fch_hra_txt",
+  //   header: "Hora",
+  // },
   {
     // accessorKey: "sd",
-    header: "Contactos",
+    header: "Marcador",
     cell: ({ row }) => {
       return (
         <SeeLocation index={row.index} />
@@ -63,14 +93,19 @@ export const columnsReports: ColumnDef<Item>[] = [
       };
 
       return (
-        <input
-          type="checkbox"
+        <Checkbox
+          className="w-[1.4rem]  h-[1.4rem]"
+          // type="checkbox"
+
           checked={row.original.isSelected}
-          onChange={() => handleChangeSelectIncidence(row.original.ide_eve)}
+          onCheckedChange={() =>
+            handleChangeSelectIncidence(row.original.ide_eve)
+          }
         />
       );
     },
   },
+
   // {
   //   id: "select",
   //   header: ({ table }) => (

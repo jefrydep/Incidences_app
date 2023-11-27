@@ -46,10 +46,16 @@ const MapRef = ({ position }: any) => {
 
   useEffect(() => {
     console.log(map);
-    console.log(position[0]);
 
-    if (map) map.flyTo({ lat: position[0].lat_eve, lng: position[0].lon_eve });
+    if (map && position.length === 1)
+      map.flyTo({ lat: position[0].lat_eve, lng: position[0].lon_eve });
   }, [position]);
+
+  // useEffect(() => {
+  //   return () => {
+  //     map.remove();
+  //   };
+  // }, [map]);
 
   return <></>;
 };
@@ -57,15 +63,15 @@ const MapRef = ({ position }: any) => {
 const Map = ({ position, detailsIncidences }: MapInterface) => {
   const { data: session } = useSession();
   const [centerPosition, setCenterPosition] = useState<any>([
-    -15.512906567247873, -70.1288912112806,
+    -9.102675379688929, -76.06400406959587,
   ]);
-
+  // -9.102675379688929, -76.06400406959587 peru
   useEffect(() => {
-    if (position) {
+    if (position.length === 1) {
       setCenterPosition([+position[0].lat_eve, +position[0].lon_eve]);
     }
   }, [position]);
-  console.log(centerPosition);
+  // console.log(centerPosition);
 
   const showImageBigger = (ide_ede: number, ide_per: number) => {
     const imgUrl = ` ${process.env.NEXT_PUBLIC_API_URL}/smart/evento_det/file/${ide_ede}/${ide_ede}.jpg?ide_per=${ide_per}&token=${session?.user.access_token}`;
@@ -87,62 +93,72 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
       confirmButtonText: "Cerrar",
     });
   };
-  return (
-    <MapContainer
-      className="z-10"
-      // center={[positi]}
+  // useEffect(() => {
+  //   const mapContainer = document.getElementById("map-container");
+  //   if (mapContainer) {
+  //     mapContainer.innerHTML = "";
+  //   }
+  // }, []);
 
-      center={centerPosition}
-      zoom={13}
-      scrollWheelZoom={true}
-      // boxZoom={true}
-      // doubleClickZoom={true}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {/* <TileLayer
+  return (
+    <div id="map-container">
+      <MapContainer
+        className="z-10"
+        // center={[positi]}
+
+        center={centerPosition}
+        zoom={13}
+        scrollWheelZoom={true}
+        // boxZoom={true}
+        // doubleClickZoom={true}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {/* <TileLayer
         url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.MAPBOX_API_key}`}
         attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>'
       /> */}
-      <MapRef position={position} />
-      {position.map((inc, idx) => (
-        <Marker
-          key={idx}
-          draggable={true}
-          // icon={markerIcon}
+        <MapRef position={position} />
+        {position.map((inc, idx) => (
+          <Marker
+            key={idx}
+            draggable={true}
+            // icon={markerIcon}
 
-          position={[+inc.lat_eve, +inc.lon_eve]}
-        >
-          <Popup className=" ">
-            <div className="flex flex-row gap-2">
-              {detailsIncidences.map((detInc, idx) => (
-                <div key={idx} className="border ">
-                  <img
-                    // className="h-[23rem] w-[23rem]"
-                    src={`https://api.pagosvirtualesperu.com/smart/evento_det/file/${detInc.ide_ede}/${detInc.ide_ede}.jpg?ide_per=${inc.ide_per}&token=${session?.user.access_token}`}
-                    alt=""
-                    onClick={() => showImageBigger(detInc.ide_ede, inc.ide_per)}
-                  />
-                </div>
-              ))}
-            </div>
-            <section className="border p-2 w-[30rem] ">
-              {/* <Button>Ver mas</Button> */}
-              <h4 className="font-bold">Detalles de incidencia</h4>
-              <div className="  ">
-                <h3 className="font-bold">{inc.des_ted}</h3>
-                <hr />
-                <h5>Mensaje</h5>
-                <p>{inc.gls_eve}</p>
+            position={[+inc.lat_eve, +inc.lon_eve]}
+          >
+            <Popup className=" ">
+              <div className="flex flex-row gap-2">
+                {detailsIncidences.map((detInc, idx) => (
+                  <div key={idx} className="border ">
+                    <img
+                      // className="h-[23rem] w-[23rem]"
+                      src={`https://api.pagosvirtualesperu.com/smart/evento_det/file/${detInc.ide_ede}/${detInc.ide_ede}.jpg?ide_per=${inc.ide_per}&token=${session?.user.access_token}`}
+                      alt=""
+                      onClick={() =>
+                        showImageBigger(detInc.ide_ede, inc.ide_per)
+                      }
+                    />
+                  </div>
+                ))}
               </div>
-            </section>
-          </Popup>
-        </Marker>
-      ))}
+              <section className="border p-2 w-[30rem] ">
+                {/* <Button>Ver mas</Button> */}
+                <h4 className="font-bold">Detalles de incidencia</h4>
+                <div className="  ">
+                  <h3 className="font-bold">{inc.des_ted}</h3>
+                  <hr />
+                  <h5>Mensaje</h5>
+                  <p>{inc.gls_eve}</p>
+                </div>
+              </section>
+            </Popup>
+          </Marker>
+        ))}
 
-      {/* <Marker
+        {/* <Marker
         icon={markerIcon}
         position={[-15.512906567247873, -70.1288912112806]}
         //   position={`${inc.lon_eve},${inc.lat_eve}`}
@@ -172,7 +188,8 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
           <br /> Software.
         </Popup>
       </Marker> */}
-    </MapContainer>
+      </MapContainer>
+    </div>
   );
 };
 
