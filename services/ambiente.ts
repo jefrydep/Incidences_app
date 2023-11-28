@@ -9,18 +9,23 @@ export const getAmbiente = (ide_eje: number, ide_amb: number) => {
 export const sendAmbienteSelected = (ambiente: {}) => {
   return tramiteApi.post(`/smart/filtro_x_inc/maintenance`, ambiente);
 };
-export const getAnswerCorrelative = (objeto: {}) => {
+
+export const getAnswerCorrelative = (objeto: string) => {
+  console.log(objeto);
   return tramiteApi.get(
     `/siam/funciones/fn_gen_nro_doc?sch_tab=smart.evento_agrupa&nro_cor=nro_ate&arr_par=${objeto}`
   );
 };
-export const getAnswerCorrelative2 = (nro_trb: number, objeto: {}) => {
+
+export const getAnswerCorrelative2 = (objeto: string) => {
   return tramiteApi.get(
-    `/siam/funciones/fn_gen_nro_doc?smart.evento_agrupa&nro_trb=${nro_trb}&arr_par=${objeto}`
+    // `/siam/funciones/fn_gen_nro_doc?sch_tab=smart.evento_agrupa&nro_trb=${nro_trb}&arr_par=${objeto}`
+    `/siam/funciones/fn_gen_nro_doc?sch_tab=smart.evento_agrupa&nro_cor=nro_trb&arr_par=${objeto}`
   );
 };
-export const getAnswerCorrelative3 = (nro_cor: number, objeto: {}) => {
+export const getAnswerCorrelative3 = (objeto: string) => {
   return tramiteApi.get(
-    `/siam/funciones/fn_gen_nro_doc?smart.evento_agrupa&nro_cor=${nro_cor}&arr_par=${objeto}`
+    `/siam/funciones/fn_gen_nro_doc?sch_tab=smart.evento_agrupa&nro_cor=nro_amb&arr_par=${objeto}`
   );
 };
+// /siam/funciones/fn_gen_nro_doc?sch_tab=smart.evento_agrupa&nro_cor=nro_ate&arr_par=

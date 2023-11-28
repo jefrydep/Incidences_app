@@ -39,6 +39,7 @@ const useAvailableIncidences = () => {
   const fch_ini = dateToStringWithTime(startDateValue);
   const fch_fin = dateToStringWithTime(currentDate);
   const currentTime = dateToStringWithTime(currentDate, true);
+
   // console.log(currentTime);
   // console.log(fch_ini);
   // console.log(fch_fin);

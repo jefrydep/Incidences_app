@@ -64,7 +64,7 @@ const ReportesPage = () => {
   const checkedIncidences = useAvailableIncidencesStore(
     (state) => state.checkedIncidence
   );
-  const { getAnswerCorrelatives } = useGroupIncidence();
+  const { getAnswerCorrelatives, correlatives } = useGroupIncidence();
   useEffect(() => {
     getAllAvailableIncidences();
   }, []);
@@ -74,13 +74,14 @@ const ReportesPage = () => {
     }
   }, [checkedIncidences]);
   const sch_tab = "smart.evento_agrupa";
-  console.log(checkedIncidences);
+
+  // console.log(checkedIncidences);
   useEffect(() => {
-    if (checkedIncidences.length > 0) {
+    if (ambiente) {
       getAnswerCorrelatives();
     }
-  }, [checkedIncidences]);
-
+  }, [ambiente]);
+  console.log(correlatives && correlatives.nro_ate);
   return (
     // nro_gor
     <div className="w-full  h-screen overflow-y-auto pt-20 lg:pt-0 ">
@@ -209,7 +210,14 @@ const ReportesPage = () => {
                         />
                       </div>
                     </div>
-                    <h5>Incidencias</h5>
+                    <section>
+                      <h4>Detalles de Seleccion</h4>
+                      <div>
+                        <h5>Nro De Atención</h5>
+                        <span> {correlatives.nro_ate}</span>
+                      </div>
+                    </section>
+
                     <div className=" flex gap-2 mb-2">
                       {/* <Formik>
                         <Form> */}
