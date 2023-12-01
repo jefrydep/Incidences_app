@@ -12,6 +12,7 @@ import { useAmbienteStore } from "@/zustanstore/ambiente/ambiente.store";
 import { useLoadingStore } from "@/zustanstore/loading/loading.store";
 import { DeleteIcon, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 const HomePage = () => {
   const { data: session, status, update } = useSession();
   const loading = useLoadingStore((state) => state.loading);

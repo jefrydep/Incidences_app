@@ -1,3 +1,4 @@
+"use client";
 import {
   getAnswerCorrelative,
   getAnswerCorrelative2,
@@ -7,15 +8,23 @@ import { useIdeEjeStore } from "@/zustanstore";
 import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
 import React, { useState } from "react";
 import qs from "qs";
+import { sendGroupIncidences } from "@/services/incidencias";
+import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 const useGroupIncidence = () => {
   const ambiente = useIdeAmbiente((state) => state.ambiente);
   const ide_eje = useIdeEjeStore((state) => state.ide_eje);
-  const [ide_trb, setide_trb] = useState(ambiente[0].ide_trb);
+  // const [ide_trb, setide_trb] = useState(ambiente[0].ide_trb);
   const [correlatives, setCorrelatives] = useState({
     nro_ate: "",
     nro_trb: "",
     nro_amb: "",
   });
+  const [checkedToSend, setCheckedToSend] = useState([]);
+  const selectedCheckedIncidences = useAvailableIncidencesStore(
+    (state) => state.selectedCheckedIncidence
+  );
+
+  console.log(selectedCheckedIncidences);
   console.log(ambiente);
   const queryObjet1 = [
     { key: "ide_eje", value: String(ide_eje) },
@@ -23,10 +32,13 @@ const useGroupIncidence = () => {
   ];
   const queryObjet2 = [
     { key: "ide_eje", value: String(ide_eje) },
-    { key: "ano_eje", value: String(ambiente[0].ano_eje) },
+    {
+      key: "ano_eje",
+      value: String(ambiente && ambiente[0] && ambiente[0].ano_eje),
+    },
     {
       key: "ide_trb",
-      value: String(ambiente[0].ide_trb),
+      value: String(ambiente && ambiente[0] && ambiente[0].ide_trb),
     },
   ];
   const queryObjet3 = [
@@ -36,11 +48,11 @@ const useGroupIncidence = () => {
     },
     {
       key: "ano_eje",
-      value: String(ambiente[0].ano_eje),
+      value: String(ambiente && ambiente[0] && ambiente[0].ano_eje),
     },
     {
       key: "ide_amb",
-      value: String(ambiente[0].ide_amb),
+      value: String(ambiente && ambiente[0] && ambiente[0].ide_amb),
     },
   ];
   // const queryObjet1 = {
@@ -98,26 +110,67 @@ const useGroupIncidence = () => {
   const params1 = `'${JSON.stringify(queryObjet1)}'`;
   const params2 = `'${JSON.stringify(queryObjet2)}'`;
   const params3 = `'${JSON.stringify(queryObjet3)}'`;
+  // console.log(params1);
+  // console.log(params2);
+  // console.log(params3);
   const getAnswerCorrelatives = async () => {
-    const { data } = await getAnswerCorrelative(params1);
+    const [response, response1, response2] = await Promise.all([
+      getAnswerCorrelative(params1),
+      getAnswerCorrelative2(params2),
+      getAnswerCorrelative3(params3),
+    ]);
 
-    const { data: data1 } = await getAnswerCorrelative2(params2);
-    const { data: data2 } = await getAnswerCorrelative3(params3);
-    if (data & data1 & data2) {
+    const data = response.data;
+    const data1 = response1.data;
+    const data2 = response2.data;
+    // const { data } = await getAnswerCorrelative(params1);
+
+    // const { data: data1 } = await getAnswerCorrelative2(params2);
+    // const { data: data2 } = await getAnswerCorrelative3(params3);
+
+    if (data && data1 && data2) {
       setCorrelatives({
         nro_ate: data.nro_ate,
         nro_trb: data1.nro_trb,
         nro_amb: data2.nro_amb,
       });
     }
-    console.log(data);
-    console.log(data1);
-    console.log(data2);
+    // console.log(data1);
+    // console.log(data2);
+    // console.log(data);
   };
 
+  interface GroupValues {
+    ide_eje: number;
+    ide_trb: number;
+    ide_amb: number;
+    fch_hra: string;
+    gls_agr: string;
+    ano_eje: string;
+    nro_ate: string;
+    nro_trb: string;
+    nro_amb: string;
+    flg_anu: number;
+    amb_des: null;
+    flg_cer: number;
+  }
+
+  const onSubmitGroupIncidences = async (values: GroupValues) => {
+    const filterCheckedIncidences = selectedCheckedIncidences.map((inc) => ({
+      ide_e_a: 0,
+      ide_eve: inc.ide_eve,
+    }));
+    console.log(filterCheckedIncidences);
+    const dataToSend = { ...values, arr_agru_det: filterCheckedIncidences };
+    console.log(dataToSend);
+
+    const { data } = await sendGroupIncidences(dataToSend);
+    console.log(data);
+  };
   return {
     getAnswerCorrelatives,
     correlatives,
+    onSubmitGroupIncidences,
   };
 };
 

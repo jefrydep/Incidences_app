@@ -27,15 +27,15 @@ const NavBar = () => {
 
   const selectedAmbiente = useIdeAmbiente((state) => state.ambiente);
   const ambientes = session?.user.data.ambientes;
-  // useEffect(() => {
-  //   if (!selectedAmbiente) {
-  //     setIsOpenModal(true);
-  //   }
-  // }, [selectedAmbiente]);
+  useEffect(() => {
+    if (!selectedAmbiente) {
+      setIsOpenModal(true);
+    }
+  }, [selectedAmbiente]);
 
   // console.log(ambientes);
-  console.log(selectedAmbiente);
-  console.log(ambientes);
+  // console.log(selectedAmbiente);
+  // console.log(ambientes);
   return (
     // <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0  z-30 top-0">
     <nav className="navBar h-16 fixed lg:sticky grid items-center right-0 left-0 z-30 lg:z-[60] top-0">

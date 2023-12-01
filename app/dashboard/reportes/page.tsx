@@ -1,7 +1,7 @@
 "use client";
 import NavBar from "@/components/navbar/NavBar";
 import { DataTable } from "@/components/ui/data-table";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { columnsReports } from "./columns";
 import { Button } from "@/components/ui/button";
 import { MdAddLocation, MdCancel } from "react-icons/md";
@@ -17,34 +17,41 @@ import { ArrowBigLeft, ArrowBigRight, Leaf, Search } from "lucide-react";
 import useIncidences from "@/components/hooks/useIncidences";
 import { useLoadingStore } from "@/zustanstore/loading/loading.store";
 import Loader from "@/components/loader/Loader";
-import { ErrorMessage, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 import CustomMolal from "@/components/customUI/CustomModal";
 import { columsChecked } from "./columnsChecked";
 import { useAmbienteStore } from "@/zustanstore/ambiente/ambiente.store";
 import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
 import useGroupIncidence from "@/components/hooks/useGroupIncidence";
-
+import { useIdeEjeStore } from "@/zustanstore";
+import * as Yup from "yup";
+import NewIncidenceModal from "@/components/reportes/NewIncidenceModal";
+import MapAndTable from "@/components/reportes/MapAndTable";
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
 });
 const ReportesPage = () => {
   const [isOpenModal, setisOpenModal] = useState(false);
+  const [isOpenNewModal, setIsOpenNewModal] = useState(false);
   const {
-    getAllAvailableIncidences,
     availableIncidences,
-    selectedIncidence,
-    setSelectedIncidence,
-    paginationIncidences,
-    getLastPage,
-    getNexPage,
-    getPreviusPage,
-    statsIncidences,
-    getStartPage,
     fch_ini,
     fch_fin,
-  } = useAvailableIncidences();
+    statsIncidences,
+    getAllAvailableIncidences,
+    // currentTime,
+    startTime,
+    endTime,
+    getLastPage,
+    getPreviusPage,
+    getStartPage,
 
+    getNexPage,
+    currentDateFormated,
+  } = useAvailableIncidences();
+  const ide_eje = useIdeEjeStore((state) => state.ide_eje);
+  const ide_amb = useIdeAmbiente((state) => state.ide_amb);
   const detailsByIncidence = useAvailableIncidencesStore(
     (state) => state.detailsByIncidence
   );
@@ -58,30 +65,39 @@ const ReportesPage = () => {
     (state) => state.selectedCheckedIncidence
   );
   const ambiente = useIdeAmbiente((state) => state.ambiente);
-  console.log(ambiente);
-
+  // console.log(ambiente);
+  const validationSchema = Yup.object().shape({
+    gls_agr: Yup.string().required("Descripción es requerida"),
+    // ccpassword: Yup.string().required("Contraseña es requerida"),
+  });
   const loading = useLoadingStore((state) => state.loading);
   const checkedIncidences = useAvailableIncidencesStore(
     (state) => state.checkedIncidence
   );
-  const { getAnswerCorrelatives, correlatives } = useGroupIncidence();
+  const { getAnswerCorrelatives, correlatives, onSubmitGroupIncidences } =
+    useGroupIncidence();
+  const buttonSubmit = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    getAllAvailableIncidences();
+    getAllAvailableIncidences({ fch_fin, fch_ini, startTime, endTime });
   }, []);
   useEffect(() => {
     if (checkedIncidences) {
       setSelectedCheckedIncidence(checkedIncidences);
     }
   }, [checkedIncidences]);
-  const sch_tab = "smart.evento_agrupa";
 
-  // console.log(checkedIncidences);
-  useEffect(() => {
-    if (ambiente) {
-      getAnswerCorrelatives();
-    }
-  }, [ambiente]);
-  console.log(correlatives && correlatives.nro_ate);
+  const openModal = () => {
+    setIsOpenNewModal(true);
+  };
+
+  const closeModal = () => {
+    setIsOpenNewModal(false);
+  };
+  console.log(correlatives);
+  const saveSelectedIncidences = () => {
+    getAnswerCorrelatives();
+    setisOpenModal(true);
+  };
   return (
     // nro_gor
     <div className="w-full  h-screen overflow-y-auto pt-20 lg:pt-0 ">
@@ -118,8 +134,16 @@ const ReportesPage = () => {
             </section>{" "}
           </TabsContent>
           <TabsContent value="reportadas">
+            <div className="  flex flex-col justify-end">
+              <Button
+                disabled={selectedCheckedIncidence.length >= 1 ? false : true}
+                onClick={saveSelectedIncidences}
+              >
+                Guardar Seleccion
+              </Button>
+            </div>
             <section className="border rounded-lg p-3 mb-2">
-              <div className="flex gap-8">
+              {/* <div className="flex gap-8">
                 <Formik
                   initialValues={{
                     startDate: fch_ini,
@@ -185,16 +209,11 @@ const ReportesPage = () => {
                     </Form>
                   )}
                 </Formik>
-                <div className="  flex flex-col justify-end">
-                  <Button onClick={() => setisOpenModal(true)}>
-                    Guardar Seleccion
-                  </Button>
-                </div>
-              </div>
+              </div> */}
 
               <div className=" ">
                 <CustomMolal isOpen={isOpenModal}>
-                  <section className="bg-white w-[85vw] ">
+                  <section className="bg-white w-[88vw] px-2 rounded-lg ">
                     <div className="flex w-full  justify-end ">
                       <div
                         className="cursor-pointer"
@@ -210,129 +229,118 @@ const ReportesPage = () => {
                         />
                       </div>
                     </div>
-                    <section>
-                      <h4>Detalles de Seleccion</h4>
-                      <div>
-                        <h5>Nro De Atención</h5>
-                        <span> {correlatives.nro_ate}</span>
-                      </div>
+                    <section className="flex gap-3">
+                      <article className=" w-96  p-2   border shadow rounded-md mb-2">
+                        <h4 className="font-bold mb-1">
+                          Detalles de Seleccion
+                        </h4>
+                        <div className="grid     grid-cols-2 gap-2">
+                          <div className="flex  justify-between">
+                            <h5 className="font-bold">Nro De Atención</h5>
+                            <span> {correlatives.nro_ate}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <h5 className="font-bold">Nro De Ambiente</h5>
+                            <span> {correlatives.nro_amb}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <h5 className="font-bold">Nro De Trb</h5>
+                            <span> {correlatives.nro_trb}</span>
+                          </div>
+                        </div>
+                      </article>
+                      <section className=" mb-2">
+                        <Formik
+                          validationSchema={validationSchema}
+                          onSubmit={onSubmitGroupIncidences}
+                          initialValues={{
+                            ide_eje: +ide_eje,
+                            ide_trb:
+                              ambiente && ambiente[0] && ambiente[0].ide_trb,
+                            ide_amb,
+                            fch_hra: `${currentDateFormated} ${startTime}`,
+                            gls_agr: "",
+                            ano_eje:
+                              ambiente && ambiente[0] && ambiente[0].ano_eje,
+                            nro_ate: correlatives && correlatives.nro_ate,
+                            nro_trb: correlatives && correlatives.nro_trb,
+                            nro_amb: correlatives && correlatives.nro_amb,
+                            flg_anu: 0,
+                            amb_des: null,
+                            flg_cer: 0,
+                          }}
+                        >
+                          <Form className=" flex bg-red-300  items-end   gap-2">
+                            <div className=" flex flex-col gap-2">
+                              <div>
+                                <label>Observaciones</label>
+
+                                <Field
+                                  as={Input}
+                                  className=" "
+                                  name="gls_agr"
+                                />
+                              </div>
+                              <ErrorMessage
+                                name={`gls_agr`}
+                                component="div"
+                                className="text-red-500 text-sm font-bold"
+                              />
+                            </div>
+                            <Button type="submit">Guardar</Button>
+                          </Form>
+                        </Formik>
+                      </section>
+                      <section>
+                        <Button onClick={openModal}>Nuevo</Button>
+                        <NewIncidenceModal
+                          endTime={endTime}
+                          fch_fin={fch_fin}
+                          fch_ini={fch_ini}
+                          startTime={startTime}
+                          getLastPage={getLastPage}
+                          getNexPage={getNexPage}
+                          getPreviusPage={getPreviusPage}
+                          getStartPage={getStartPage}
+                          gegetAvailableIncidences={getAvailableIncidences}
+                          statsIncidences={statsIncidences && statsIncidences}
+                          isOpen={isOpenNewModal}
+                          onClose={closeModal}
+                        />
+                      </section>
                     </section>
 
-                    <div className=" flex gap-2 mb-2">
-                      {/* <Formik>
-                        <Form> */}
-                      <div className=" flex gap-2">
-                        <label htmlFor="">registrars</label>
-                        <Input className=" " />
-                      </div>
-                      <div className=" flex gap-2">
-                        <label htmlFor="">registrar</label>
-                        <Input />
-                      </div>
-                      <div className=" flex gap-2">
-                        <label htmlFor="">registrar</label>
-                        <Input />
-                      </div>
-                      <div className=" flex gap-2">
-                        <label htmlFor="">registrar</label>
-                        <Input />
-                      </div>
-                      <Button>Enviar</Button>
-                      {/* </Form>
-                      </Formik> */}
-                    </div>
-
-                    <div className="">
-                      <div className="flex ">
+                    <div className=" grid grid-cols-3">
+                      <div className="col-span-1  h-[75vh]   overflow-scroll  ">
                         <DataTable
                           columns={columsChecked}
                           data={checkedIncidences}
                         />
+                      </div>
+                      <div className="col-span-2">
                         <DynamicMap
                           position={selectedCheckedIncidence}
                           detailsIncidences={detailsByCheckedIncidence}
                         />
                       </div>
                     </div>
+                    {/* <Button type="submit">Guardar</Button> */}
                   </section>
                 </CustomMolal>
               </div>
-              <div className="flex gap-2 mt-2 ">
-                {availableIncidences && (
-                  <div className=" h-[75vh]   overflow-scroll  ">
-                    <DataTable
-                      columns={columnsReports}
-                      data={availableIncidences}
-                    />
-                  </div>
-                )}
-                {/* <div>
-                  <div className="flex flex-row flex-wrap">
-                    {availableIncidences &&
-                      availableIncidences.map((inc, idx) => (
-                        <div
-                          key={idx}
-                          className="bg-blue-500 m-2 text-white flex gap-2 w-full justify-between lg:w-max    lg:min-w-[10rem] px-4 py-1 rounded-md lg:p-2  cursor-pointer"
-                          onClick={() => handleLabelClick(idx)}
-                        >
-                          <Label className="cursor-pointer">
-                            {inc.des_ted}
-                          </Label>
-                          <input className="mr-3" type="checkbox" />
-                        </div>
-                      ))}
-                  </div>
-                </div> */}
-                <div className=" ">
-                  <div className="flex gap-2 mb-2">
-                    <Button variant={"outline"} onClick={getStartPage}>
-                      Inicio
-                    </Button>
-                    <Button
-                      disabled={
-                        statsIncidences?.currentPage === 1 ? true : false
-                      }
-                      onClick={getPreviusPage}
-                    >
-                      <span>
-                        <ArrowBigLeft />
-                      </span>
-                      Anterior
-                    </Button>
-                    <Button
-                      disabled={
-                        statsIncidences?.totalPages ===
-                        statsIncidences?.currentPage
-                          ? true
-                          : false
-                      }
-                      onClick={getNexPage}
-                    >
-                      Siguiente
-                      <span>
-                        <ArrowBigRight />
-                      </span>
-                    </Button>
-                    <Button variant={"outline"} onClick={getLastPage}>
-                      Ultimo
-                    </Button>
-                  </div>
-                  <section>
-                    <div>
-                      <h5>
-                        Página {statsIncidences?.currentPage}de
-                        {statsIncidences?.totalPages}
-                      </h5>
-                    </div>
-                    {selectedIncidence && (
-                      <DynamicMap
-                        position={selectedIncidence}
-                        detailsIncidences={detailsByIncidence}
-                      />
-                    )}
-                  </section>
-                </div>
-              </div>
+
+              <MapAndTable
+                endTime={endTime}
+                startTime={startTime}
+                fch_ini={fch_ini}
+                fch_fin={fch_fin}
+                getAllAvailableIncidences={getAllAvailableIncidences}
+                getLastPage={getLastPage}
+                getPreviusPage={getPreviusPage}
+                getStartPage={getStartPage}
+                getNexPage={getNexPage}
+                statsIncidences={statsIncidences && statsIncidences}
+              />
             </section>
           </TabsContent>
         </Tabs>

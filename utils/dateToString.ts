@@ -11,3 +11,7 @@ export const dateToStringWithTime = (date: Date, hora?: boolean): string => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 };
+
+export const dateToString = (date: Date): string => {
+  return date.toISOString().split("T")[0];
+};

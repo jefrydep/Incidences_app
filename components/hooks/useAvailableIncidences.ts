@@ -8,9 +8,9 @@ import {
   Meta,
 } from "@/interface/AvailableIncidences";
 import { getAvailableIncidences } from "@/services/incidencias";
-import { dateToStringWithTime } from "@/utils/dateToString";
+import { dateToString, dateToStringWithTime } from "@/utils/dateToString";
 import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
-import React, { useState } from "react";
+import { useState } from "react";
 import useIncidences from "./useIncidences";
 import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 
@@ -36,21 +36,41 @@ const useAvailableIncidences = () => {
   const currentDate = new Date();
   const startDateValue = new Date();
   startDateValue.setDate(currentDate.getDate() - 31);
-  const fch_ini = dateToStringWithTime(startDateValue);
-  const fch_fin = dateToStringWithTime(currentDate);
+  const currentDateFormated = dateToString(currentDate);
+  // const fch_ini = dateToStringWithTime(startDateValue);
+  const fch_ini = dateToString(startDateValue);
+  const fch_fin = dateToString(currentDate);
+  // const fch_fin = dateToStringWithTime(currentDate);
   const currentTime = dateToStringWithTime(currentDate, true);
+  const startTime = currentTime;
+  const endTime = currentTime;
 
   // console.log(currentTime);
   // console.log(fch_ini);
   // console.log(fch_fin);
 
   const offset = 1;
-  const limit = 9;
+  const limit = 15;
 
-  const getAllAvailableIncidences = async () => {
+  interface FormValuesIncidence {
+    fch_ini: string;
+    fch_fin: string;
+    startTime: string;
+    endTime: string;
+    // currentTime: string;
+  }
+  const getAllAvailableIncidences = async ({
+    fch_fin,
+    fch_ini,
+    startTime,
+    endTime,
+  }: // currentTime,
+  FormValuesIncidence) => {
     const { data } = await getAvailableIncidences(
       fch_ini,
       fch_fin,
+      startTime,
+      endTime,
       ide_amb,
       offset,
       limit
@@ -69,7 +89,7 @@ const useAvailableIncidences = () => {
   const getPreviusPage = async () => {
     const prev = paginationIncidences?.previous;
     const { data } = await tramiteApi.get(
-      `/${prev}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
+      `/${prev}&fch_ini=${`${fch_ini} ${startTime}`}&fch_fin=${`${fch_fin} ${endTime}`}&ide_amb=${ide_amb}`
     );
     const IncidencesIsChecked = data.items.map((inc: Item) => ({
       ...inc,
@@ -86,7 +106,7 @@ const useAvailableIncidences = () => {
   const getNexPage = async () => {
     const next = paginationIncidences?.next;
     const { data } = await tramiteApi.get(
-      `/${next}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
+      `/${next}&fch_ini=${`${fch_ini} ${startTime}`}&fch_fin=${`${fch_fin} ${endTime}`}&ide_amb=${ide_amb}`
     );
     console.log(data);
     const IncidencesIsChecked = data.items.map((inc: Item) => ({
@@ -103,7 +123,7 @@ const useAvailableIncidences = () => {
   const getLastPage = async () => {
     const last = paginationIncidences?.last;
     const { data } = await tramiteApi.get(
-      `/${last}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
+      `/${last}&fch_ini=${`${fch_ini} ${startTime}`}&fch_fin=${`${fch_fin} ${endTime}`}&ide_amb=${ide_amb}`
     );
     const IncidencesIsChecked = data.items.map((inc: Item) => ({
       ...inc,
@@ -119,7 +139,7 @@ const useAvailableIncidences = () => {
   const getStartPage = async () => {
     const start = paginationIncidences?.first;
     const { data } = await tramiteApi.get(
-      `/${start}&fch_ini=${fch_ini}&fch_fin=${fch_fin}&ide_amb=${ide_amb}`
+      `/${start}&fch_ini=${`${fch_ini} ${startTime}`}&fch_fin=${`${fch_fin} ${endTime}`}&ide_amb=${ide_amb}`
     );
     const IncidencesIsChecked = data.items.map((inc: Item) => ({
       ...inc,
@@ -147,6 +167,10 @@ const useAvailableIncidences = () => {
     getStartPage,
     fch_ini,
     fch_fin,
+    currentDateFormated,
+    // currentTime,
+    startTime,
+    endTime,
   };
 };
 

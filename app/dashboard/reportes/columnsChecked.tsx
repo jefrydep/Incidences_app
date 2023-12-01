@@ -14,21 +14,50 @@ import { useState } from "react";
 // You can use a Zod schema here if you want.
 
 export const columsChecked: ColumnDef<Item>[] = [
+  // {
+  //   accessorKey: "nom_com",
+  //   header: "Nombre",
+  // },
+  // {
+  //   accessorKey: "des_ted",
+  //   header: "Descripción",
+  // },
+  // {
+  //   accessorKey: "dir_eve",
+  //   header: "Dirección",
+  // },
+  // {
+  //   accessorKey: "fch_hra_txt",
+  //   header: "Hora",
+  // },
   {
-    accessorKey: "nom_com",
-    header: "Nombre",
-  },
-  {
-    accessorKey: "des_ted",
-    header: "Descripción",
-  },
-  {
-    accessorKey: "dir_eve",
-    header: "Dirección",
-  },
-  {
-    accessorKey: "fch_hra_txt",
-    header: "Hora",
+    // accessorKey: "sd",
+    header: "Detalles",
+    cell: ({ row }) => {
+      return (
+        <article className="shadow-lg rounded-lg p-2 border flex flex-col gap-2">
+          <div className=" flex justify-between ">
+            <h5 className="mr-3 font-bold">Descripcion:</h5>
+            <span className=" ">{row.original.des_ted}</span>
+          </div>
+          <div className=" flex justify-between  ">
+            <h5 className="mr-3 font-bold">Reportante:</h5>
+            <span>{row.original.nom_com}</span>
+          </div>
+          <div className=" flex justify-between   ">
+            <h5 className="mr-3 font-bold">Direccion:</h5>
+            <span>{row.original.dir_eve}</span>
+          </div>
+          <div className=" flex justify-between  ">
+            <h5 className="mr-3 font-bold">Hora:</h5>
+            <span>{row.original.fch_hra_txt}</span>
+          </div>
+        </article>
+        // <Button onClick={() => handleLabelClick(row.index)}>
+        //   {/* <Button>Ver Contactos */}
+        // </Button>
+      );
+    },
   },
   {
     // accessorKey: "sd",

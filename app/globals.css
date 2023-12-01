@@ -105,4 +105,5 @@
 .leaflet-container {
   height: 67vh;
   width: 50vw;
+  min-width: 50vw;
 }
