@@ -46,6 +46,7 @@ const LoginForm = ({ ide_eje }: PropsLogin) => {
   const nom_eje = entitie && entitie[0].nom_eje;
   const pathImg = entitie && entitie[0]?.pat_img;
   const ruc_eje = entitie && entitie[0]?.ruc_eje;
+  console.log(entitie);
   return (
     <div className="  z-50 ">
       {isLoadingLogin && <Loader />}

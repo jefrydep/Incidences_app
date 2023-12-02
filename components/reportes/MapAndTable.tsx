@@ -76,7 +76,7 @@ const MapAndTable = ({
                   <div>
                     <Label htmlFor="expedientes"> Desde</Label>
                     <Input
-                      className="lg:max-w-[12rem] w-full "
+                      className="lg:max-w-[14rem] w-full "
                       type="date"
                       name="fch_ini"
                       value={values.fch_ini}
@@ -92,7 +92,7 @@ const MapAndTable = ({
                     <Label htmlFor="expedientes"> Hora Inicial</Label>
                     <Input
                       name="startTime"
-                      className="lg:max-w-[12rem] w-full "
+                      className="lg:max-w-[14rem] w-full "
                       type="time"
                       value={values.startTime}
                       onChange={handleChange}
@@ -107,7 +107,7 @@ const MapAndTable = ({
                     <Label htmlFor="expedientes"> Hasta</Label>
                     <Input
                       name="fch_fin"
-                      className="lg:max-w-[12rem] w-full "
+                      className="lg:max-w-[14rem] w-full "
                       type="date"
                       value={values.fch_fin}
                       onChange={handleChange}
@@ -123,7 +123,7 @@ const MapAndTable = ({
                     <Label htmlFor="expedientes"> Hora Final</Label>
                     <Input
                       name="endTime"
-                      className="lg:max-w-[12rem] w-full "
+                      className="lg:max-w-[14rem] w-full "
                       type="time"
                       value={values.endTime}
                       onChange={handleChange}

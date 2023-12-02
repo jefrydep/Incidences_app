@@ -22,7 +22,7 @@ export const ColumnsReports: ColumnDef<Item>[] = [
       return (
         <article className="shadow-lg rounded-lg p-2 border flex flex-col gap-2">
           <div className=" flex justify-between ">
-            <h5 className="mr-3 font-bold">Descripcion:</h5>
+            <h5 className="mr-3 font-bold">Descripción:</h5>
             <span className=" ">{row.original.des_ted}</span>
           </div>
           <div className=" flex justify-between  ">
@@ -30,7 +30,7 @@ export const ColumnsReports: ColumnDef<Item>[] = [
             <span>{row.original.nom_com}</span>
           </div>
           <div className=" flex justify-between   ">
-            <h5 className="mr-3 font-bold">Direccion:</h5>
+            <h5 className="mr-3 font-bold">Dirección:</h5>
             <span>{row.original.dir_eve}</span>
           </div>
           <div className=" flex justify-between  ">

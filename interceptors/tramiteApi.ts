@@ -11,6 +11,8 @@ tramiteApi.interceptors.request.use(async (config: any) => {
 
   const session = await getSession();
   // console.log(session?.user.access_token);
+  // const localStorageData = localStorage.getItem("ambiente-storage");
+  // console.log(localStorageData);
   useLoadingStore.getState().showLoading();
   config.headers = {
     ...config.headers,

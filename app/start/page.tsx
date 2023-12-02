@@ -8,14 +8,17 @@ import useEntieties from "@/components/hooks/useEntieties";
 import CustomButton from "@/components/customUI/CustomButton";
 import { useLoadingStore } from "@/zustanstore/loading/loading.store";
 import Loader from "@/components/loader/Loader";
+import { useIdeEjeStore } from "@/zustanstore";
 
 const StartPage = () => {
+  const setIdeEje = useIdeEjeStore((state) => state.setIdeEje);
   const isLoading = useLoadingStore((state) => state.loading);
   // const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/ppto/ejecutora/funciones/fn_obt_ejecutoras_web_dsd_con_fig/19`;
   // const { entities, error, loading } = useAxios<CompanyResponse[]>(API_URL);
   // const [companies, setCompanies] = useState<CompanyResponse[] | null>(entities);
   const router = useRouter();
   const { companies, entities, getAllEntities, setCompanies } = useEntieties();
+  console.log(entities);
   useEffect(() => {
     setCompanies(entities);
   }, [entities]);
@@ -32,6 +35,7 @@ const StartPage = () => {
   // }
   const handleSelectCompany = (ide_eje: number) => {
     router.push(`login/${ide_eje}`);
+    setIdeEje(ide_eje);
   };
   const handleSearchComapanie = ({ nameCompany }: PropsSearch) => {
     const entitiesFiltered = entities?.filter((entities) =>

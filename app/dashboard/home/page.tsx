@@ -147,6 +147,7 @@ const ReportesPage = () => {
                 disabled={selectedCheckedIncidence.length >= 1 ? false : true}
                 onClick={saveSelectedIncidences}
               >
+                <span>({selectedCheckedIncidence.length})-</span>
                 Guardar Seleccion
               </Button>
             </div>
