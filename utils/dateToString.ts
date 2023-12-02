@@ -15,3 +15,16 @@ export const dateToStringWithTime = (date: Date, hora?: boolean): string => {
 export const dateToString = (date: Date): string => {
   return date.toISOString().split("T")[0];
 };
+export const getStartTime = (date: Date) => {
+  date.setHours(0, 0, 0, 0);
+
+  const hora = date.getHours();
+  const minutos = date.getMinutes();
+  const segundos = date.getSeconds();
+
+  const horaConCero = `${hora.toString().padStart(2, "0")}:${minutos
+    .toString()
+    .padStart(2, "0")}:${segundos.toString().padStart(2, "0")}`;
+
+  return horaConCero;
+};

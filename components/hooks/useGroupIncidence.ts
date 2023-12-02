@@ -10,9 +10,12 @@ import React, { useState } from "react";
 import qs from "qs";
 import { sendGroupIncidences } from "@/services/incidencias";
 import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 const useGroupIncidence = () => {
   const ambiente = useIdeAmbiente((state) => state.ambiente);
   const ide_eje = useIdeEjeStore((state) => state.ide_eje);
+  const router = useRouter();
   // const [ide_trb, setide_trb] = useState(ambiente[0].ide_trb);
   const [correlatives, setCorrelatives] = useState({
     nro_ate: "",
@@ -24,8 +27,8 @@ const useGroupIncidence = () => {
     (state) => state.selectedCheckedIncidence
   );
 
-  console.log(selectedCheckedIncidences);
-  console.log(ambiente);
+  // console.log(selectedCheckedIncidences);
+  // console.log(ambiente);
   const queryObjet1 = [
     { key: "ide_eje", value: String(ide_eje) },
     { key: "ano_eje", value: "2023" },
@@ -160,12 +163,24 @@ const useGroupIncidence = () => {
       ide_e_a: 0,
       ide_eve: inc.ide_eve,
     }));
-    console.log(filterCheckedIncidences);
+    // console.log(filterCheckedIncidences);
     const dataToSend = { ...values, arr_agru_det: filterCheckedIncidences };
-    console.log(dataToSend);
+    // console.log(dataToSend);
 
-    const { data } = await sendGroupIncidences(dataToSend);
-    console.log(data);
+    const { data, status } = await sendGroupIncidences(dataToSend);
+    console.log(status);
+    if (status === 201) {
+      Swal.fire({
+        icon: "success",
+        title: "Incidencias Acogidas",
+        text: "Las incidencias seleccionadas han sido acogidas satisfactoriamente",
+      });
+      // router.refresh();
+
+      window.location.reload();
+      // router.push(`/dashboard/reportes`);
+    }
+    // console.log(data);
   };
   return {
     getAnswerCorrelatives,

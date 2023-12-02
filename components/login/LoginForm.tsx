@@ -11,6 +11,7 @@ import useLoginForm from "../hooks/useLoginForm";
 import { useIdeEjeStore } from "@/zustanstore/ideEje/ideEje.store";
 import Loader from "../loader/Loader";
 import axios from "axios";
+import useEntieties from "../hooks/useEntieties";
 const validationSchema = Yup.object().shape({
   cidusuario: Yup.string().required("Usuario es requerido"),
   ccpassword: Yup.string().required("Contraseña es requerida"),
@@ -23,6 +24,11 @@ interface PropsLogin {
 const LoginForm = ({ ide_eje }: PropsLogin) => {
   const { onLogin, isLoadingLogin } = useLoginForm();
   const [ipClient, setIpClient] = useState<string>();
+  const { entitie, getEntietieByIdEje } = useEntieties();
+  useEffect(() => {
+    getEntietieByIdEje();
+  }, []);
+
   const setIdeEje = useIdeEjeStore((state) => state.setIdeEje);
   useEffect(() => {
     setIdeEje(ide_eje);
@@ -37,14 +43,27 @@ const LoginForm = ({ ide_eje }: PropsLogin) => {
     getIpClient();
   }, []);
 
+  const nom_eje = entitie && entitie[0].nom_eje;
+  const pathImg = entitie && entitie[0]?.pat_img;
+  const ruc_eje = entitie && entitie[0]?.ruc_eje;
   return (
     <div className="  z-50 ">
       {isLoadingLogin && <Loader />}
       <section className="border grid lg:grid-cols-2 gap-3  lg:w-[50rem]  shadow-xl  rounded-lg">
         <div className="hidden lg:block">
           <div className="w-full h-full bg-green-500 relative rounded-r-full">
-            <div className="w-[90%] h-full bg-green-300 absolute   rounded-r-full ">
-              My image
+            <div className="w-[90%] h-full bg-green-300     rounded-r-full ">
+              <section className="bgLoginForm  px-2   py-4 flex-col  shadow-2xl lg:rounded-l-3xl">
+                <h4 className="text-center mb-3 font-bold">{nom_eje}</h4>
+                <div className="w-full flex justify-center">
+                  {entitie && (
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/ppto/ejecutora/${ide_eje}/${ide_eje}.png`}
+                      alt=""
+                    />
+                  )}
+                </div>
+              </section>
             </div>
           </div>
         </div>

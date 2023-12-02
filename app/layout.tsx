@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AxiosInterceptor } from "@/interceptors/axios.interceptor";
 import Providers from "./Providers";
 import NavBar from "@/components/navbar/NavBar";
 

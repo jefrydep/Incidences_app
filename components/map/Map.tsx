@@ -28,16 +28,7 @@ interface MapInterface {
   detailsIncidences: DetailsIncidences[];
   // idePer: number;
 }
-const marker_icon = Leaflet.divIcon({
-  html: markerSvg,
-});
 
-const getImage = () => {
-  Swal.fire({
-    icon: "info",
-    title: "Accidente Enmtre dos vehiculos",
-  });
-};
 const MapRef = ({ position }: any) => {
   const map = useMap();
   useEffect(() => {
@@ -45,7 +36,7 @@ const MapRef = ({ position }: any) => {
   }, [map]);
 
   useEffect(() => {
-    console.log(map);
+    // console.log(map);
 
     if (map && position.length === 1)
       map.flyTo({ lat: position[0].lat_eve, lng: position[0].lon_eve });
@@ -66,6 +57,7 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
     -9.102675379688929, -76.06400406959587,
   ]);
   // -9.102675379688929, -76.06400406959587 peru
+  const mapRef = useRef<L.Map>(null);
   useEffect(() => {
     if (position.length === 1) {
       setCenterPosition([+position[0].lat_eve, +position[0].lon_eve]);
@@ -146,7 +138,7 @@ const Map = ({ position, detailsIncidences }: MapInterface) => {
               </div>
               <section className="border p-2 w-[30rem] ">
                 {/* <Button>Ver mas</Button> */}
-                <h4 className="font-bold">Detalles de incidencia</h4>
+                <h4 className="font-bold">Detalles de la incidencia</h4>
                 <div className="  ">
                   <h3 className="font-bold">{inc.des_ted}</h3>
                   <hr />

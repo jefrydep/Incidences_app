@@ -107,3 +107,10 @@
   width: 50vw;
   min-width: 50vw;
 }
+.bgButton {
+  background-color: var(--bgNavbar);
+  color: white;
+}
+* {
+  font-size: 12px;
+}

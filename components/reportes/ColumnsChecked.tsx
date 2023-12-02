@@ -1,19 +1,13 @@
 "use client";
 
-import useAvailableIncidences from "@/components/hooks/useAvailableIncidences";
-import useIncidences from "@/components/hooks/useIncidences";
-import SeeLocation from "@/components/reportes/SeeLocation";
 import SeeLocationChecked from "@/components/reportes/SeeLocationChecked";
-import { Button } from "@/components/ui/button";
 import { Item } from "@/interface/AvailableIncidences";
-import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 import { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const columsChecked: ColumnDef<Item>[] = [
+export const ColumnsChecked: ColumnDef<Item>[] = [
   // {
   //   accessorKey: "nom_com",
   //   header: "Nombre",

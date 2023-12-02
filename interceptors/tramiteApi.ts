@@ -24,7 +24,7 @@ tramiteApi.interceptors.request.use(async (config: any) => {
 tramiteApi.interceptors.response.use(
   (response) => {
     useLoadingStore.getState().hideLoading();
-    console.log("interceptor", response);
+    // console.log("interceptor", response);
     return response;
   },
   (error) => {

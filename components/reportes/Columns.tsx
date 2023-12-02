@@ -9,11 +9,12 @@ import { Item } from "@/interface/AvailableIncidences";
 import { useAvailableIncidencesStore } from "@/zustanstore/availableIncidences/availableIncidense.store";
 import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import Checked from "./Checked";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const columnsReports: ColumnDef<Item>[] = [
+export const ColumnsReports: ColumnDef<Item>[] = [
   {
     // accessorKey: "sd",
     header: "Detalles",
@@ -75,32 +76,12 @@ export const columnsReports: ColumnDef<Item>[] = [
     accessorKey: "isSelected",
     header: "Seleccionar",
     cell: ({ row }) => {
-      const [selectedIncidences, setSelectedIncidences] = useState<Item[]>([]);
-      const setAvailableIncidence = useAvailableIncidencesStore(
-        (state) => state.setAvailableIncidences
-      );
-      const availableIncidences = useAvailableIncidencesStore(
-        (state) => state.availableIncidences
-      );
-      const togleIncidence = useAvailableIncidencesStore(
-        (state) => state.toggleSelectedIncidence
-      );
-      // console.log(values);
-      const handleChangeSelectIncidence = (ide_eve: number) => {
-        // const selectedIncidence = availableIncidences[index];
-        togleIncidence(ide_eve);
-        // setAvailableIncidence(newdata);
-      };
-
       return (
-        <Checkbox
-          className="w-[1.4rem]  h-[1.4rem]"
-          // type="checkbox"
-
-          checked={row.original.isSelected}
-          onCheckedChange={() =>
-            handleChangeSelectIncidence(row.original.ide_eve)
+        <Checked
+          isSelected={
+            row.original.isSelected !== undefined && row.original.isSelected
           }
+          ide_eve={row.original.ide_eve}
         />
       );
     },

@@ -8,7 +8,11 @@ import {
   Meta,
 } from "@/interface/AvailableIncidences";
 import { getAvailableIncidences } from "@/services/incidencias";
-import { dateToString, dateToStringWithTime } from "@/utils/dateToString";
+import {
+  dateToString,
+  dateToStringWithTime,
+  getStartTime,
+} from "@/utils/dateToString";
 import { useIdeAmbiente } from "@/zustanstore/ideAmb/ideAmb.store";
 import { useState } from "react";
 import useIncidences from "./useIncidences";
@@ -42,7 +46,9 @@ const useAvailableIncidences = () => {
   const fch_fin = dateToString(currentDate);
   // const fch_fin = dateToStringWithTime(currentDate);
   const currentTime = dateToStringWithTime(currentDate, true);
-  const startTime = currentTime;
+
+  const startTimeCero = getStartTime(currentDate);
+  const startTime = startTimeCero;
   const endTime = currentTime;
 
   // console.log(currentTime);
@@ -50,7 +56,7 @@ const useAvailableIncidences = () => {
   // console.log(fch_fin);
 
   const offset = 1;
-  const limit = 15;
+  const limit = 10;
 
   interface FormValuesIncidence {
     fch_ini: string;

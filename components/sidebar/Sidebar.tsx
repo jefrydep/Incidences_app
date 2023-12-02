@@ -42,7 +42,6 @@ const Sidebar = () => {
   // console.log(ide_eje);
   const isOpen = useMenuStore((state) => state.isOpen);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const selectedAmbiente = useIdeAmbiente((state) => state.nom_amb);
 
   // const permissions = [
   //   {
@@ -101,7 +100,7 @@ const Sidebar = () => {
             </div>
           ))} */}
           <LinkButton
-            href="/dashboard/reportes"
+            href="/dashboard/home"
             icon={<MdReportProblem />}
             name="Reportes"
           />
@@ -110,7 +109,7 @@ const Sidebar = () => {
               <AccordionTrigger>Tipos de incidencia</AccordionTrigger>
               <AccordionContent>
                 <LinkButton
-                  href="/dashboard/home"
+                  href="/dashboard/ambient"
                   icon={<TrendingUp />}
                   name="Ambiente"
                 />

@@ -11,7 +11,7 @@ interface NewIncidenceModalProps {
   getNexPage: () => void;
   getPreviusPage: () => void;
   getStartPage: () => void;
-  getAvailableIncidences: () => void;
+  // getAvailableIncidences: () => void;
   statsIncidences: Meta;
   fch_ini: string;
   fch_fin: string;
@@ -31,8 +31,8 @@ const NewIncidenceModal = ({
   fch_fin,
   startTime,
   endTime,
-  getAvailableIncidences,
-}: NewIncidenceModalProps) => {
+}: // getAvailableIncidences,
+NewIncidenceModalProps) => {
   return (
     <section>
       <CustomMolal isOpen={isOpen}>
@@ -51,7 +51,7 @@ const NewIncidenceModal = ({
             <MapAndTable
               fch_fin={fch_fin}
               fch_ini={fch_ini}
-              getAllAvailableIncidences={getAvailableIncidences}
+              // getAllAvailableIncidences={getAvailableIncidences}
               startTime={startTime}
               endTime={endTime}
               getLastPage={getLastPage}

@@ -1,5 +1,5 @@
 "use client";
-import { columnsReports } from "@/app/dashboard/reportes/columns";
+
 import React from "react";
 import { DataTable } from "../ui/data-table";
 import { Button } from "../ui/button";
@@ -11,6 +11,7 @@ import { ErrorMessage, Form, Formik } from "formik";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import useAvailableIncidences from "../hooks/useAvailableIncidences";
+import { ColumnsReports } from "./Columns";
 const DynamicMap = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
 });
@@ -26,7 +27,7 @@ interface MapAndTableValues {
   startTime: string;
   endTime: string;
 
-  getAllAvailableIncidences: () => Promise<void>;
+  // getAllAvailableIncidences: () => Promise<void>;
   //   fch_ini: string;
   //   fch_fin: string;
   //   getAllAvailableIncidences: () => void;
@@ -37,26 +38,13 @@ const MapAndTable = ({
   getStartPage,
   getPreviusPage,
   getLastPage,
-  getAllAvailableIncidences,
+  // getAllAvailableIncidences,
   fch_fin,
   fch_ini,
   startTime,
   endTime,
 }: MapAndTableValues) => {
-  //   const {
-  //     getAllAvailableIncidences,
-  //     setSelectedIncidence,
-  //     paginationIncidences,
-  //     // getLastPage,
-  //     // getNexPage,
-  //     // getPreviusPage,
-  //     // statsIncidences,
-  //     // getStartPage,
-  //     fch_ini,
-  //     fch_fin,
-  //     currentTime,
-  //     currentDateFormated,
-  //   } = useAvailableIncidences();
+  const { getAllAvailableIncidences } = useAvailableIncidences();
   const availableIncidences = useAvailableIncidencesStore(
     (state) => state.availableIncidences
   );
@@ -66,7 +54,7 @@ const MapAndTable = ({
   const detailsByIncidence = useAvailableIncidencesStore(
     (state) => state.detailsByIncidence
   );
-  console.log(statsIncidences);
+  // console.log(statsIncidences);
   return (
     <>
       <div className="flex gap-8">
@@ -101,21 +89,6 @@ const MapAndTable = ({
                     />
                   </div>
                   <div>
-                    <Label htmlFor="expedientes"> Hasta</Label>
-                    <Input
-                      name="fch_fin"
-                      className="lg:max-w-[12rem] w-full "
-                      type="date"
-                      value={values.fch_fin}
-                      onChange={handleChange}
-                    />
-                    <ErrorMessage
-                      component="div"
-                      name="endDate"
-                      className="text-red-400  lg:hidden"
-                    />
-                  </div>
-                  <div>
                     <Label htmlFor="expedientes"> Hora Inicial</Label>
                     <Input
                       name="startTime"
@@ -130,6 +103,22 @@ const MapAndTable = ({
                       className="text-red-400  lg:hidden"
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="expedientes"> Hasta</Label>
+                    <Input
+                      name="fch_fin"
+                      className="lg:max-w-[12rem] w-full "
+                      type="date"
+                      value={values.fch_fin}
+                      onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      component="div"
+                      name="endDate"
+                      className="text-red-400  lg:hidden"
+                    />
+                  </div>
+
                   <div>
                     <Label htmlFor="expedientes"> Hora Final</Label>
                     <Input
@@ -172,7 +161,7 @@ const MapAndTable = ({
       <div className="flex gap-2 mt-2 ">
         {availableIncidences && (
           <div className=" h-[75vh]   overflow-scroll  ">
-            <DataTable columns={columnsReports} data={availableIncidences} />
+            <DataTable columns={ColumnsReports} data={availableIncidences} />
           </div>
         )}
 
@@ -204,7 +193,7 @@ const MapAndTable = ({
               </span>
             </Button>
             <Button variant={"outline"} onClick={getLastPage}>
-              Ultimo
+              Último
             </Button>
           </div>
           <section>

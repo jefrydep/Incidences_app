@@ -28,7 +28,7 @@ const NavBar = () => {
   const selectedAmbiente = useIdeAmbiente((state) => state.ambiente);
   const ambientes = session?.user.data.ambientes;
   useEffect(() => {
-    if (!selectedAmbiente) {
+    if (selectedAmbiente.length <= 0) {
       setIsOpenModal(true);
     }
   }, [selectedAmbiente]);

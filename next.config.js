@@ -6,6 +6,7 @@ const nextConfig = {
     remotePatterns: [
       {
         hostname: "api.pagosvirtualesperu.com",
+        hostname: "www.documentosvirtuales.com",
       },
     ],
   },
